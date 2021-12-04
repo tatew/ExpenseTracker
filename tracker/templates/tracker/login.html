@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="row">
+            <i class="fas fa-user"></i>
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+        <div class="row">
+            <i class="fas fa-lock"></i>
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
+        <div class="lastrow">
+            <input id="submit" type="submit" value="Login" class="oswald"/>
+            <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+    </form>
+{% endblock %}
