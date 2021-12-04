@@ -1,0 +1,2 @@
+- id: man
+  cmd: python manage.py
