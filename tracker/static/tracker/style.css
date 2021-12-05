@@ -1,13 +1,13 @@
 body {
     font-family: 'JetBrains Mono', monospace;
     margin: 0;
-    background-color: #6c757d;
+    background-color: #051b11;
 }
 
 nav {
-    background-color: #051b11;
+    background-color: #0a3622;
     padding: 1rem;
-    color: #198754;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -41,14 +41,14 @@ h1 {
 }
 
 .btn-primary {
-    border-color: #198754;
-    color: #198754;
+    border-color: white;
+    color: white;
 }
 
 .btn-primary:hover {
-    border-color: #198754;
-    color: white;
-    background-color: #198754;
+    border-color: white;
+    color: #198754;
+    background-color: white;
 }
 
 #headerLogo {
@@ -58,9 +58,31 @@ h1 {
 
 .small-content {
     width: 30%;
-    height: 30%;
-    background-color: #051b11;
+    background-color: #0a3622;
     padding: 2rem;
     border-radius: 0.4rem;
-    color: #198754;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+#indexLogo {
+    font-size: 5rem;
+}
+
+.small-content h1 {
+    text-align: center;
+}
+
+#mainLogin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+#mainLogin i {
+    font-size: 2rem;
 }
