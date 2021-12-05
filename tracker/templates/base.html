@@ -26,12 +26,12 @@
             </div>
             {% if request.path != '/' and request.path != '/accounts/login/' %}
                 <div id="logoutButton">
-                    <a class="btn btn-primary"  href="{% url 'logout' %}">Logout<i class="bi bi-arrow-bar-right btn-icon-right"></i></a>
+                    <a class="btn btn-primary"  href="{% url 'logout' %}">Logout<i class="bi bi-arrow-bar-right icon-right"></i></a>
                 </div>
             {% endif %}
         </nav>
     </header>
-    <div class="content">
+    <div class="main">
         {% block content %}
         {% endblock %}
     </div>

@@ -6,5 +6,6 @@ from . import views
 urlpatterns = [
     url(r"^accounts/", include("django.contrib.auth.urls")),
     path('home/', views.home, name='home'),
+    path('logExpense/', views.logExpense, name='logExpense'),
     path('', views.index, name="index")
 ]

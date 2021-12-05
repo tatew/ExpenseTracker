@@ -6,8 +6,17 @@ from django.db.models.deletion import PROTECT
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
+
 class Method(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class BalanceChange(models.Model):
     date = models.DateField()
