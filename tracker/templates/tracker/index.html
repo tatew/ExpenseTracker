@@ -6,14 +6,8 @@
 
 {% block content %}
     <div class="small-content">
-        <div class="row">
-            <i class="bi bi-piggy-bank-fill" id="indexLogo"></i>
-        </div>
-        <div class="row">
-            <h1>Welcome to SimpleTracker</h1>
-        </div>
-        <div class="row">
-            <a class="btn btn-primary" href="{% url 'login' %}">Login<i class="bi bi-arrow-right btn-icon-right"></i></a>
-        </div>
+        <i class="bi bi-piggy-bank-fill" id="indexLogo"></i>
+        <h1>Welcome to SimpleTracker</h1>
+        <a class="btn btn-primary" href="{% url 'login' %}">Login<i class="bi bi-arrow-right btn-icon-right"></i></a>
     </div>
 {% endblock %}

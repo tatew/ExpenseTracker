@@ -58,6 +58,7 @@ h1 {
 
 .small-content {
     width: 30%;
+    min-width: 220px;
     background-color: #0a3622;
     padding: 2rem;
     border-radius: 0.4rem;
@@ -70,6 +71,8 @@ h1 {
 
 #indexLogo {
     font-size: 5rem;
+    margin-bottom: -1rem;
+    margin-top: -1rem;
 }
 
 .small-content h1 {
