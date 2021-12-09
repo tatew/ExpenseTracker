@@ -9,26 +9,11 @@
         <form id="expenseForm" method="post" action="{% url 'logExpense' %}">
             {% csrf_token %}
             <div class="form" id="form">
-                <label for="date"><i class="bi bi-calendar-date icon-left"></i>Date</label>
-                <input id="date" type="date">
-                <label for="reason"><i class="bi bi-question-square icon-left"></i>Reason</label>
-                <input id="reason" type="text">
-                <label for="vendor"><i class="bi bi-shop icon-left"></i>Vendor</label>
-                <input id="vendor" type="text">
-                <label for="category"><i class="bi bi-card-list icon-left"></i>Category</label>
-                <select id="category">
-                    {% for category in categories %}
-                        <option value="{{ category.id }}">{{ category.name }}</option>
-                    {% endfor %}
-                </select>
-                <label for="mathod"><i class="bi bi-credit-card icon-left"></i>Method</label>
-                <select id="mathod">
-                    {% for method in methods %}
-                        <option value="{{ method.id }}">{{ method.name }}</option>
-                    {% endfor %}
-                </select>
-                <label for="amount"><i class="bi bi-currency-dollar icon-left"></i>Amount</label>
-                <input id="amount" type="number" min="0" step="0.01">
+                {% for field in form %}
+                    <label for="{{ field.id_for_label }}"><i class="{{ form.iconClasses|get_value:field.name }}"></i>{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                {% endfor %}
             </div>
         </form>
         <button id="submit" form="expenseForm" type="submit" class="btn btn-primary">Submit<i class="bi bi-check2-square icon-right"></i></button>

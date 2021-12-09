@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.deletion import PROTECT
+from django.contrib import auth
 
 # Create your models here.
 
@@ -22,6 +23,7 @@ class BalanceChange(models.Model):
     date = models.DateField()
     vendor = models.CharField(max_length=200)
     reason = models.CharField(max_length=500)
-    category = models.ForeignKey(Category, on_delete=PROTECT, null=True)
-    method = models.ForeignKey(Method, on_delete=PROTECT, null=True)
+    category = models.ForeignKey(Category, on_delete=PROTECT)
+    method = models.ForeignKey(Method, on_delete=PROTECT)
     amount = models.DecimalField(max_digits=8, decimal_places=2)
+    user = models.ForeignKey(auth.get_user_model(), on_delete=PROTECT)

@@ -129,6 +129,13 @@ button.btn {
     gap: 0.5rem;
 }
 
+/* Base */
+
+#siteTitle a {
+    color: white;
+    text-decoration: none;
+}
+
 /* Index */
 
 #indexLogo {
