@@ -5,17 +5,6 @@
 
 {% block content %}
     <div class="content medium-content">
-        <h2 class="page-title">Log Expense</h2>
-        <form id="expenseForm" method="post" action="{% url 'logExpense' %}">
-            {% csrf_token %}
-            <div class="form" id="form">
-                {% for field in form %}
-                    <label for="{{ field.id_for_label }}"><i class="{{ form.iconClasses|get_value:field.name }}"></i>{{ field.label }}</label>
-                    {{ field }}
-                    {{ field.errors }}
-                {% endfor %}
-            </div>
-        </form>
-        <button id="submit" form="expenseForm" type="submit" class="btn btn-primary">Submit<i class="bi bi-check2-square icon-right"></i></button>
+        {% include "tracker/form.html" %}
     </div>
 {% endblock %}

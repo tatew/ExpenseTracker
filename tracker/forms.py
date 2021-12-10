@@ -1,9 +1,11 @@
 from django.db import models
 from django.db.models.base import Model
 from .models import BalanceChange
+from django import forms #import ModelForm, widgets
 from django.forms import ModelForm, widgets
 
 class ExpenseForm(ModelForm):
+    formId = 'expenseForm'
 
     iconClasses = {
         'date': 'bi bi-calendar-date icon-left',
@@ -13,6 +15,8 @@ class ExpenseForm(ModelForm):
         'method': 'bi bi-credit-card icon-left',
         'amount': 'bi bi-currency-dollar icon-left'
     }
+
+    prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
 
     def __init__(self, *args, **kwargs):
         super(ExpenseForm, self).__init__(*args, **kwargs)
@@ -24,5 +28,5 @@ class ExpenseForm(ModelForm):
         exclude = ('user',)
         widgets = {
             'date': widgets.DateInput(attrs={'type': 'date'}),
-            'amount': widgets.TextInput(attrs={'pattern': '\d*'})
+            'amount': widgets.NumberInput(attrs={'pattern': '\d*'})
         }

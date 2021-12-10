@@ -24,6 +24,7 @@ def logExpense(request):
     if (request.method == "POST"):
         # create a form instance and populate it with data from the request:
         form = ExpenseForm(request.POST)
+        prevUrl = form.data['prevUrl']
         # check whether it's valid:
         if form.is_valid():
             print(form.cleaned_data)
@@ -41,10 +42,8 @@ def logExpense(request):
         else:
             return render(request, "tracker/logExpense.html", {'form': form})
     else:
-        categories = Category.objects.order_by("name")
-        methods = Method.objects.order_by("name")
-
-        form = ExpenseForm()
+        prevUrl = request.GET.get('prevUrl', 'home')
+        form = ExpenseForm(initial={'prevUrl': prevUrl})
         
         return render(request, "tracker/logExpense.html", {'form': form})
 
