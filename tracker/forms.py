@@ -23,5 +23,6 @@ class ExpenseForm(ModelForm):
         fields = '__all__'
         exclude = ('user',)
         widgets = {
-            'date': widgets.DateInput(attrs={'type': 'date'})
+            'date': widgets.DateInput(attrs={'type': 'date'}),
+            'amount': widgets.TextInput(attrs={'pattern': '\d*'})
         }
