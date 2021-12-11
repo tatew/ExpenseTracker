@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="content medium-content">
+        <h1>Results</h1>
+        <div>
+            <h3>Result Summary</h3>
+            <p>{{ results.numSuccess }}</p>
+            <p>{{ results.numFail }}</p>
+        </div>
+        <div>
+            <h3>Errors</h3>
+            <ul>
+                {% for error in results.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <a class="btn btn-primary icon-right" href="{% url 'home' %}">Home</a>
+        <a class="btn btn-primary icon-right" href="{% url 'import' %}">Import another</a>
+    </div>
+{% endblock %}

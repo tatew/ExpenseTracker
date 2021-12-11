@@ -36,10 +36,12 @@ class ExpenseForm(ModelForm):
 class ImportForm(forms.Form):
     formId = 'importForm'
     action = '/import/'
+    hasEncType = True
+    enctype = 'multipart/form-data'
 
     iconClasses = {
-        'file': 'bi bi-file-earmark-plus icon-left'
+        'csvFile': 'bi bi-file-earmark-plus icon-left'
     }
 
     prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
-    file = forms.FileField(validators=[validate_file_extension_csv])
+    csvFile = forms.FileField(validators=[validate_file_extension_csv], label="CSV file")

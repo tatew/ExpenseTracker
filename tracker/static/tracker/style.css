@@ -130,6 +130,11 @@ button.btn {
     gap: 0.5rem;
 }
 
+.form .errorlist {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
 /* Base */
 
 #siteTitle a {
@@ -180,6 +185,6 @@ button.btn {
     text-align: center;
 }
  /* Import */
- #id_file {
+ #id_csvFile {
      color: black;
  }

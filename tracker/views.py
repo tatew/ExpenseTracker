@@ -65,21 +65,29 @@ def importBalanceChanges(request):
     if (request.method == "POST"):
         form = ImportForm(request.POST, request.FILES)
         print(form.data)
+        print(form.errors)
 
         if form.is_valid():
+            print('valid')
             #process form 
             try:
-                decoded_file = request.FILES['file'].read().decode('utf-8')
+                print('trying')
+                decoded_file = request.FILES['csvFile'].read().decode('utf-8')
             except UnicodeDecodeError as e:
-                form.add_error('file', 'Error decoding the file, use .csv files only')
-            
+                print('except')
+                form.add_error('csvFile', 'Error decoding the file, use .csv files only')
+                return render(request, 'tracker/import.html', {'form': form})
+            print('starting read')
             io_string = io.StringIO(decoded_file)
             csvReader = csv.reader(io_string, delimiter=',')
             results = importBalanceChangeCsv(csvReader, request)
-
-            redirect('/home')
+            print('success')
+            return render(request, 'tracker/importResults.html', {'results': results})
         else:
+            print('invalid')
             return render(request, 'tracker/import.html', {'form': form})
     else:
-        form = ImportForm()
+        print('GET')
+        prevUrl = request.GET.get('prevUrl', 'home')
+        form = ImportForm(initial={'prevUrl': prevUrl})
         return render(request, 'tracker/import.html', {'form': form})
