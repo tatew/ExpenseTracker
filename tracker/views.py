@@ -42,7 +42,8 @@ def logExpense(request):
                 user=request.user
             )
             expense.save()
-            return redirect('/home')
+            expense.amount = expense.amount *-1
+            return render(request, 'tracker/logExpenseSuccess.html', {'expense': expense})
         else:
             return render(request, "tracker/logExpense.html", {'form': form})
     else:
@@ -64,30 +65,24 @@ def listBalanceChanges(request):
 def importBalanceChanges(request):
     if (request.method == "POST"):
         form = ImportForm(request.POST, request.FILES)
-        print(form.data)
-        print(form.errors)
-
         if form.is_valid():
-            print('valid')
-            #process form 
             try:
-                print('trying')
                 decoded_file = request.FILES['csvFile'].read().decode('utf-8')
             except UnicodeDecodeError as e:
-                print('except')
                 form.add_error('csvFile', 'Error decoding the file, use .csv files only')
                 return render(request, 'tracker/import.html', {'form': form})
-            print('starting read')
+
             io_string = io.StringIO(decoded_file)
             csvReader = csv.reader(io_string, delimiter=',')
             results = importBalanceChangeCsv(csvReader, request)
-            print('success')
-            return render(request, 'tracker/importResults.html', {'results': results})
+            
+            context = {
+                'results': results
+            }
+            return render(request, 'tracker/importResults.html', context)
         else:
-            print('invalid')
             return render(request, 'tracker/import.html', {'form': form})
     else:
-        print('GET')
         prevUrl = request.GET.get('prevUrl', 'home')
         form = ImportForm(initial={'prevUrl': prevUrl})
         return render(request, 'tracker/import.html', {'form': form})

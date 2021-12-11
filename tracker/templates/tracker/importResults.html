@@ -2,24 +2,46 @@
 
 {% block nav %}
 {% endblock %}
-
+<script>
+    function showHideElement() {
+        console.log("clicked")
+    }
+</script>
 {% block content %}
+    <script>
+        function showHideElement() {
+            const errors = document.getElementById("errors");
+            if (errors.style.display === "none") {
+                errors.style.display = "block";
+            } else {
+                errors.style.display = "none";
+            }
+            const showHideErrors = document.getElementById("showHideErrors");
+            if (showHideErrors.innerText.includes("Show")) {
+                showHideErrors.innerHTML = '<i class="bi bi-caret-down-square icon-left"></i>Hide Error Details'
+            } else {
+                showHideErrors.innerHTML = '<i class="bi bi-caret-right-square icon-left"></i>Show Error Details'
+            }
+        }
+    </script>
     <div class="content medium-content">
         <h1>Results</h1>
-        <div>
+        <div id="results">
             <h3>Result Summary</h3>
             <p>{{ results.numSuccess }}</p>
             <p>{{ results.numFail }}</p>
+            <button id="showHideErrors" onclick="showHideElement()" class="btn btn-primary"><i class="bi bi-caret-right-square icon-left"></i>Show Error Details</button>
+            <div id="errors" style="display: none">
+                <ul>
+                    {% for error in results.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        <div>
-            <h3>Errors</h3>
-            <ul>
-                {% for error in results.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
+        <div class="end-buttons">
+            <a class="btn btn-primary" href="{% url 'home' %}">Home<i class="bi bi-house icon-right"></i></a>
+            <a class="btn btn-primary" href="{% url 'import' %}">Import Another<i class="bi bi-upload icon-right"></i></a>
         </div>
-        <a class="btn btn-primary icon-right" href="{% url 'home' %}">Home</a>
-        <a class="btn btn-primary icon-right" href="{% url 'import' %}">Import another</a>
     </div>
 {% endblock %}

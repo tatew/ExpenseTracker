@@ -135,6 +135,10 @@ button.btn {
     grid-column-end: 3;
 }
 
+.end-buttons {
+    margin-top: 1rem;
+}
+
 /* Base */
 
 #siteTitle a {
@@ -184,7 +188,13 @@ button.btn {
     margin: 0;
     text-align: center;
 }
- /* Import */
- #id_csvFile {
-     color: black;
- }
+
+/* Import */
+#id_csvFile {
+    color: black;
+}
+
+/* Import Results */
+#results {
+    width: 80%;
+}

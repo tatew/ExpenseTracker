@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <a href="/logExpense?prevUrl=home">Log expense</a>
+    <a href="{% url 'logExpense' %}">Log expense</a>
     <a href="{% url 'list' %}">List</a>
-    <a href="/import?prevUrl=home">Import</a>
+    <a href="{% url 'import' %}">Import</a>
 {% endblock %}
