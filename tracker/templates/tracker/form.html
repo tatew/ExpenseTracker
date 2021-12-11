@@ -1,5 +1,5 @@
 <h2 class="page-title">Log Expense</h2>
-<form id="{{ form.formId }}" method="post" action="{% url 'logExpense' %}">
+<form id="{{ form.formId }}" method="post" action="{{ form.action }}">
     {% csrf_token %}
     <div class="form" id="form">
         {% for hidden in form.hidden_fields %}

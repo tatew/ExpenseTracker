@@ -8,5 +8,6 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('logExpense/', views.logExpense, name='logExpense'),
     path('list/', views.listBalanceChanges, name='list'),
+    path('import/', views.importBalanceChanges, name='import'),
     path('', views.index, name="index")
 ]

@@ -5,15 +5,21 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import BalanceChange, Category, Method
-from .forms import ExpenseForm
+from .forms import ExpenseForm, ImportForm
+from .services import importBalanceChangeCsv
 from django.template.defaulttags import register
+import csv
+import io
 ...
 @register.filter
 def get_value(dictionary, key):
     return dictionary.get(key)
 
 def index(request):
-    return render(request, "tracker/index.html")
+    if request.user.is_authenticated:
+        return redirect('/home')
+    else:
+        return render(request, "tracker/index.html")
 
 @login_required
 def home(request):
@@ -24,10 +30,8 @@ def logExpense(request):
     if (request.method == "POST"):
         # create a form instance and populate it with data from the request:
         form = ExpenseForm(request.POST)
-        prevUrl = form.data['prevUrl']
         # check whether it's valid:
         if form.is_valid():
-            print(form.cleaned_data)
             expense = BalanceChange(
                 date=form.cleaned_data['date'],
                 reason=form.cleaned_data['reason'],
@@ -55,3 +59,27 @@ def listBalanceChanges(request):
     }
 
     return render(request, "tracker/listBalanceChanges.html", context)
+
+@login_required
+def importBalanceChanges(request):
+    if (request.method == "POST"):
+        form = ImportForm(request.POST, request.FILES)
+        print(form.data)
+
+        if form.is_valid():
+            #process form 
+            try:
+                decoded_file = request.FILES['file'].read().decode('utf-8')
+            except UnicodeDecodeError as e:
+                form.add_error('file', 'Error decoding the file, use .csv files only')
+            
+            io_string = io.StringIO(decoded_file)
+            csvReader = csv.reader(io_string, delimiter=',')
+            results = importBalanceChangeCsv(csvReader, request)
+
+            redirect('/home')
+        else:
+            return render(request, 'tracker/import.html', {'form': form})
+    else:
+        form = ImportForm()
+        return render(request, 'tracker/import.html', {'form': form})
