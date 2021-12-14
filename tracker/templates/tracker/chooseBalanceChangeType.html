@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="content medium-content">
+        <h2>Log Balance Change</h2>
+        <div class="cards small-cards">
+            <a href="{% url 'logIncome' %}" class="btn btn-primary card big-card"><i class="bi bi-graph-up-arrow"></i>Log Income</a>
+            <a href="{% url 'logExpense' %}" class="btn btn-primary card big-card"><i class="bi bi-graph-down-arrow"></i>Log Expense</a>
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-primary">Cancel<i class="bi bi-x-lg icon-right"></i></a>
+    </div>
+{% endblock %}

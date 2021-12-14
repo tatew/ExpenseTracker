@@ -5,9 +5,10 @@ from django import forms #import ModelForm, widgets
 from django.forms import ModelForm, widgets
 from .validators import validate_file_extension_csv
 
-class ExpenseForm(ModelForm):
-    formId = 'expenseForm'
-    action = '/logExpense/'
+class BalanceChangeForm(ModelForm):
+    formId = ''
+    action = ''
+    title = ''
 
     iconClasses = {
         'date': 'bi bi-calendar-date icon-left',
@@ -21,7 +22,7 @@ class ExpenseForm(ModelForm):
     prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
 
     def __init__(self, *args, **kwargs):
-        super(ExpenseForm, self).__init__(*args, **kwargs)
+        super(BalanceChangeForm, self).__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs['min'] = 0
 
     class Meta:

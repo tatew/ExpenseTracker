@@ -5,7 +5,15 @@
 {% endblock %}
 
 {% block content %}
-    <a href="{% url 'logExpense' %}">Log expense</a>
-    <a href="{% url 'list' %}">List</a>
-    <a href="{% url 'import' %}">Import</a>
+    <div class="content big-content">
+        <h1>Current balance for this month: ${{ monthlyBalance }}</h1>
+    </div>
+    <div class="content big-content">
+        <div class="cards big-cards">
+            <a class="btn btn-primary card big-card" href="{% url 'chooseBalanceChangeType' %}"><i class="bi bi-pencil-square"></i>Log</a>
+            <a class="btn btn-primary card big-card" href="{% url 'list' %}"><i class="bi bi-list-ul"></i>List</a>
+            <a class="btn btn-primary card big-card" href="{% url 'import' %}"><i class="bi bi-cloud-upload"></i>Import</a>
+        </div>
+    </div>
+    
 {% endblock %}

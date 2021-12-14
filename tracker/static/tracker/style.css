@@ -85,12 +85,13 @@ button.btn {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .big-content {
     width: 70%;
     min-width: 250px;
-    max-width: 800px;
+    max-width: 1000px;
 }
 
 .big-content h1 {
@@ -137,6 +138,45 @@ button.btn {
 
 .end-buttons {
     margin-top: 1rem;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.big-cards {
+    gap: 2rem;
+}
+
+.small-cards {
+    gap: 1rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.big-card {
+    width: 10rem;
+    height: 10rem;
+    font-size: 1.5rem;
+}
+
+.small-card {
+    width: 5rem;
+    height: 5rem;
+    font-size: 1rem;
+}
+
+.card i {
+    font-size: 200%;
 }
 
 /* Base */

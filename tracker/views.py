@@ -5,11 +5,12 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import BalanceChange, Category, Method
-from .forms import ExpenseForm, ImportForm
+from .forms import BalanceChangeForm, ImportForm
 from .services import importBalanceChangeCsv
 from django.template.defaulttags import register
 import csv
 import io
+from datetime import date
 ...
 @register.filter
 def get_value(dictionary, key):
@@ -23,13 +24,24 @@ def index(request):
 
 @login_required
 def home(request):
-    return render(request, "tracker/home.html")
+    today = date.today()
+    balancesForThisMonth = BalanceChange.objects.filter()
+    balance = 1
+
+    context = {
+        'monthlyBalance': balance
+    }
+    return render(request, "tracker/home.html", context)
+
+@login_required
+def chooseBalanceChangeType(request):
+    return render(request, 'tracker/chooseBalanceChangeType.html')
 
 @login_required
 def logExpense(request):
     if (request.method == "POST"):
         # create a form instance and populate it with data from the request:
-        form = ExpenseForm(request.POST)
+        form = BalanceChangeForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
             expense = BalanceChange(
@@ -45,12 +57,44 @@ def logExpense(request):
             expense.amount = expense.amount *-1
             return render(request, 'tracker/logExpenseSuccess.html', {'expense': expense})
         else:
-            return render(request, "tracker/logExpense.html", {'form': form})
+            return render(request, "tracker/fullPageForm.html", {'form': form})
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
-        form = ExpenseForm(initial={'prevUrl': prevUrl})
+        form = BalanceChangeForm(initial={'prevUrl': prevUrl})
+        form.formId = 'expenseForm'
+        form.action = '/logExpense/'
+        form.title = 'Log Expense'
         
-        return render(request, "tracker/logExpense.html", {'form': form})
+        return render(request, "tracker/fullPageForm.html", {'form': form})
+
+@login_required
+def logIncome(request):
+    if (request.method == "POST"):
+        # create a form instance and populate it with data from the request:
+        form = BalanceChangeForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            income = BalanceChange(
+                date=form.cleaned_data['date'],
+                reason=form.cleaned_data['reason'],
+                vendor=form.cleaned_data['vendor'],
+                method=form.cleaned_data['method'],
+                category=form.cleaned_data['category'],
+                amount=form.cleaned_data['amount'],
+                user=request.user
+            )
+            income.save()
+            return render(request, 'tracker/logIncomeSuccess.html', {'income': income})
+        else:
+            return render(request, "tracker/fullPageForm.html", {'form': form})
+    else:
+        prevUrl = request.GET.get('prevUrl', 'home')
+        form = BalanceChangeForm(initial={'prevUrl': prevUrl})
+        form.formId = 'incomeForm'
+        form.action = '/logIncome/'
+        form.title = 'Log Income'
+        
+        return render(request, "tracker/fullPageForm.html", {'form': form})
 
 @login_required
 def listBalanceChanges(request):
