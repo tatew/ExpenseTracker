@@ -1,8 +1,8 @@
 from collections import namedtuple
-from .models import BalanceChange, Category, Method
+from .models import Transaction, Category, Method
 import datetime
 
-def importBalanceChangeCsv(reader, request):
+def importTransactionsCsv(reader, request):
     reader.__next__()
     header = ['date', 'vendor', 'reason', 'method', 'category', 'amount']
     line = 1
@@ -16,11 +16,11 @@ def importBalanceChangeCsv(reader, request):
     for row in reader:
         row = {header[i]: row[i] for i in range(len(row))}
         if len(row) != 6:
-            results['errors'].append(f"Error creating balance change on line {line}: Incorrect number of columns")
+            results['errors'].append(f"Error creating transaction on line {line}: Incorrect number of columns")
             num_failed += 1
         else:
             try:
-                balanceChange = BalanceChange(
+                transaction = Transaction(
                     date=datetime.datetime.strptime(row['date'].strip(), "%m/%d/%Y"),
                     reason=row['reason'].strip(),
                     vendor=row['vendor'].strip(),
@@ -29,32 +29,17 @@ def importBalanceChangeCsv(reader, request):
                     amount=float(row['amount'].strip()),
                     user=request.user
                 )
-                balanceChange.save()
+                transaction.save()
                 num_imported += 1
             except:
-                results['errors'].append(f"Error creating balance change on line {line}. This balance change was not created")
+                results['errors'].append(f"Error transaction change on line {line}. This transaction was not created")
                 num_failed += 1
             line += 1
 
-
-            # balanceChange = BalanceChange(
-            #     date=datetime.datetime.strptime(row['date'].strip(), "%m/%d/%Y"),
-            #     reason=row['reason'].strip(),
-            #     vendor=row['vendor'].strip(),
-            #     method=lookupMethod(row['method'].strip()),
-            #     category=lookupCategory(row['category'].strip()),
-            #     amount=float(row['amount'].strip()),
-            #     user=request.user
-            # )
-            # balanceChange.save()
-            # num_imported += 1
-            # line += 1
-
-
     if num_imported > 0:
-        results['numSuccess'] = f"{num_imported} balance changes successfully imported"
+        results['numSuccess'] = f"{num_imported} transactions successfully imported"
     if num_failed > 0:
-        results['numFail'] = f"{num_failed} balance changes failed to import"
+        results['numFail'] = f"{num_failed} transactions failed to import"
     return results
 
 def lookupMethod(methodStr):

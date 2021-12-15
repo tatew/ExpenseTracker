@@ -1,11 +1,11 @@
 from django.db import models
 from django.db.models.base import Model
-from .models import BalanceChange
+from .models import Transaction
 from django import forms #import ModelForm, widgets
 from django.forms import ModelForm, widgets
 from .validators import validate_file_extension_csv
 
-class BalanceChangeForm(ModelForm):
+class TransactionForm(ModelForm):
     formId = ''
     action = ''
     title = ''
@@ -22,11 +22,11 @@ class BalanceChangeForm(ModelForm):
     prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
 
     def __init__(self, *args, **kwargs):
-        super(BalanceChangeForm, self).__init__(*args, **kwargs)
+        super(TransactionForm, self).__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs['min'] = 0
 
     class Meta:
-        model = BalanceChange
+        model = Transaction
         fields = '__all__'
         exclude = ('user',)
         widgets = {

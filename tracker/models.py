@@ -19,7 +19,7 @@ class Method(models.Model):
     def __str__(self):
         return self.name
 
-class BalanceChange(models.Model):
+class Transaction(models.Model):
     date = models.DateField()
     vendor = models.CharField(max_length=200)
     reason = models.CharField(max_length=500)

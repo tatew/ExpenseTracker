@@ -30,6 +30,14 @@ form {
     justify-content: center;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid white;
+}
+
 .main {
     margin: 2rem;
     display: flex;
