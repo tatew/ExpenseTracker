@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load filters %}
 
 {% block nav %}
 {% endblock %}
@@ -6,26 +7,35 @@
 {% block content %}
     <div class="content big-content">
         <h2 class="page-title">Transactions</h2>
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Vendor</th>
-                <th>Reason</th>
-                <th>Method</th>
-                <th>Category</th>
-                <th>Amount</th>
-            </tr>
-            {% for transaction in transactions %}
+        <div class="list">
+            <table>
                 <tr>
-                    <td>{{ transaction.date }}</td>
-                    <td>{{ transaction.vendor }}</td>
-                    <td>{{ transaction.reason }}</td>
-                    <td>{{ transaction.method }}</td>
-                    <td>{{ transaction.category }}</td>
-                    <td>${{ transaction.amountStr }}</td>
+                    <th>Date</th>
+                    <th>Vendor</th>
+                    <th>Reason</th>
+                    <th>Method</th>
+                    <th>Category</th>
+                    <th>Amount</th>
                 </tr>
-            {% endfor %}
-        </table>
-        
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.dateStr }}</td>
+                        <td>{{ transaction.vendor }}</td>
+                        <td>{{ transaction.reason }}</td>
+                        <td>{{ transaction.method }}</td>
+                        <td>{{ transaction.category }}</td>
+                        <td class="accounting">{{ transaction.amountStr|spacify }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p>Showing {{ transactions.count }} transactions</p>
+        {% if not hideShowMore %}
+            <form method="post" action="{% url 'list' %}">
+                {% csrf_token %}
+                <input hidden name="prevNumToShow" type="number" value="{{ prevNumToShow }}">
+                <button type="submit" class="btn btn-primary">Show More<i class="bi bi-plus-lg icon-right"></i></button>
+            </form>
+        {% endif %}
     </div>
 {% endblock %}

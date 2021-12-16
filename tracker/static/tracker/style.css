@@ -32,10 +32,15 @@ form {
 
 table {
     border-collapse: collapse;
+    
 }
 
 table, th, td {
     border: 1px solid white;
+}
+
+th, td {
+    padding: 0.3rem 1rem;
 }
 
 .main {
@@ -185,6 +190,20 @@ button.btn {
 
 .card i {
     font-size: 200%;
+}
+
+.list {
+    width: 100% !important;
+    overflow-x: scroll; 
+}
+
+.list table {
+    display: block;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
+    margin: 0 auto;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 /* Base */

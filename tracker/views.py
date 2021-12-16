@@ -1,22 +1,12 @@
 import datetime
-from django.forms.utils import pretty_name
-from django.http.response import FileResponse
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, Category, Method
 from .forms import TransactionForm, ImportForm
 from .services import importTransactionsCsv
-from django.template.defaulttags import register
 import csv
 import io
-from datetime import date
 from django.db.models import Sum
-...
-@register.filter
-def get_value(dictionary, key):
-    return dictionary.get(key)
 
 def index(request):
     if request.user.is_authenticated:
@@ -99,15 +89,29 @@ def logIncome(request):
 
 @login_required
 def listTransactions(request):
+    numToShow = 10
+    if (request.method == "POST"):
+        print(request.POST)
+        numToShow = int(request.POST['prevNumToShow']) + 10
 
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    print(numToShow)
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')[:numToShow + 1]
+    
+    hideShowMore = False
+    if (transactions.count() < numToShow + 1):
+        hideShowMore = True
+
+    transactions = transactions[:numToShow]
+
     for transaction in transactions:
-        transaction.date = datetime.date.strftime(transaction.date, "%m/%d/%Y")
-        transaction.amountStr = '{amount:{fill}{align}{width}}'.format(amount=str(transaction.amount), fill=' ', align='>', width=10)
-        print(transaction.amountStr)
+        transaction.dateStr = datetime.date.strftime(transaction.date, "%m/%d/%Y")
+        amountStr = f"{transaction.amount:,}"
+        transaction.amountStr = f"${amountStr:>12}"
 
     context = {
-        'transactions': transactions
+        'transactions': transactions,
+        'hideShowMore': hideShowMore,
+        'prevNumToShow': numToShow
     }
 
     return render(request, "tracker/listTransactions.html", context)

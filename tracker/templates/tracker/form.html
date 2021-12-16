@@ -1,3 +1,4 @@
+{% load filters %}
 <form id="{{ form.formId }}" method="post" action="{{ form.action }}" {% if form.hasEncType %} enctype="{{ form.enctype }}" {% endif %}>
     {% csrf_token %}
     <div class="form" id="form">
