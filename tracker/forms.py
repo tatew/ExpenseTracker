@@ -31,7 +31,7 @@ class TransactionForm(ModelForm):
         exclude = ('user',)
         widgets = {
             'date': widgets.DateInput(attrs={'type': 'date'}),
-            'amount': widgets.NumberInput(attrs={'pattern': '\d*'})
+            'amount': widgets.NumberInput(attrs={'inputmode': 'decimal'})
         }
 
 class ImportForm(forms.Form):

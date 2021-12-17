@@ -17,10 +17,15 @@ def index(request):
 @login_required
 def home(request):
     transactionsForThisMonth = Transaction.objects.filter(date__month=datetime.datetime.now().month, user=request.user)
+    
     sumOfTransactions = transactionsForThisMonth.aggregate(Sum('amount'))['amount__sum']
+    if (sumOfTransactions == None):
+        sumOfTransactions = 0
+    
+
 
     context = {
-        'monthlyBalance': sumOfTransactions
+        'monthlyBalance': "{:,.2f}".format(sumOfTransactions)
     }
     return render(request, "tracker/home.html", context)
 
