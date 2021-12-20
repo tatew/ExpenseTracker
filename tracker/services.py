@@ -11,7 +11,8 @@ def importTransactionsCsv(reader, request):
     results = {
         'errors': [],
         'numSuccess': '',
-        'numFail': ''
+        'numFail': '',
+        'showErrorButton': False
     }
     for row in reader:
         row = {header[i]: row[i] for i in range(len(row))}
@@ -32,7 +33,7 @@ def importTransactionsCsv(reader, request):
                 transaction.save()
                 num_imported += 1
             except:
-                results['errors'].append(f"Error transaction change on line {line}. This transaction was not created")
+                results['errors'].append(f"Error on line {line}. This transaction was not created")
                 num_failed += 1
             line += 1
 
@@ -40,6 +41,7 @@ def importTransactionsCsv(reader, request):
         results['numSuccess'] = f"{num_imported} transactions successfully imported"
     if num_failed > 0:
         results['numFail'] = f"{num_failed} transactions failed to import"
+        results['showErrorButton'] = True
     return results
 
 def lookupMethod(methodStr):
