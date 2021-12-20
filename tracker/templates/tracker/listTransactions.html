@@ -9,22 +9,26 @@
         <h2 class="page-title">Transactions</h2>
         <div class="list">
             <table>
-                <tr>
+                <thead>
                     <th>Date</th>
                     <th>Vendor</th>
                     <th>Reason</th>
                     <th>Method</th>
                     <th>Category</th>
                     <th>Amount</th>
-                </tr>
+                    <!-- <th>Edit</th>
+                    <th>Delete</th> -->
+                </thead>
                 {% for transaction in transactions %}
-                    <tr>
+                    <tr class="clickable">
                         <td>{{ transaction.dateStr }}</td>
                         <td>{{ transaction.vendor }}</td>
                         <td>{{ transaction.reason }}</td>
                         <td>{{ transaction.method }}</td>
                         <td>{{ transaction.category }}</td>
                         <td class="accounting">{{ transaction.amountStr|spacify }}</td>
+                        <!-- <td><button class="btn btn-primary">Edit<i class="bi bi-pencil-square icon-right"></i></button></td>
+                        <td><button class="btn btn-primary">Delete<i class="bi bi-x-square icon-right"></i></button></td> -->
                     </tr>
                 {% endfor %}
             </table>

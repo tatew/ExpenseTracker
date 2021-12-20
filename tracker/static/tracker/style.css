@@ -43,6 +43,13 @@ th, td {
     padding: 0.3rem 1rem;
 }
 
+tr.clickable:hover {
+    border-color: #198754;
+    color: #198754;
+    background-color: white;
+    cursor: pointer;
+}
+
 .main {
     margin: 2rem;
     display: flex;
@@ -104,7 +111,7 @@ button.btn {
 .big-content {
     width: 70%;
     min-width: 250px;
-    max-width: 1000px;
+    max-width: 1200px;
 }
 
 .big-content h1 {

@@ -27,3 +27,6 @@ class Transaction(models.Model):
     method = models.ForeignKey(Method, on_delete=PROTECT)
     amount = models.DecimalField(max_digits=8, decimal_places=2)
     user = models.ForeignKey(auth.get_user_model(), on_delete=PROTECT)
+
+    def __str__(self):
+        return f"${self.amount} on {self.date} at {self.vendor}"
