@@ -146,3 +146,47 @@ def importTransactions(request):
         prevUrl = request.GET.get('prevUrl', 'home')
         form = ImportForm(initial={'prevUrl': prevUrl})
         return render(request, 'tracker/import.html', {'form': form})
+
+@login_required
+def transaction(request, id):
+    transaction = Transaction.objects.get(id=id)
+    isExpense = transaction.amount < 0
+
+    if (request.method == "POST"):
+        # create a form instance and populate it with data from the request:
+        form = TransactionForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            
+            amount = form.cleaned_data['amount'] if not isExpense else form.cleaned_data['amount'] * -1
+
+            transaction.date=form.cleaned_data['date']
+            transaction.reason=form.cleaned_data['reason']
+            transaction.vendor=form.cleaned_data['vendor']
+            transaction.method=form.cleaned_data['method']
+            transaction.category=form.cleaned_data['category']
+            transaction.amount=amount
+            transaction.save()
+
+            return render(request, 'tracker/transactionUpdateSuccess.html', { 'transaction': transaction })
+        else:
+            return render(request, "tracker/fullPageForm.html", {'form': form})
+    else:
+        prevUrl = request.GET.get('prevUrl', 'home')
+
+        inital = {
+            'date': transaction.date,
+            'reason': transaction.reason,
+            'vendor': transaction.vendor,
+            'method': transaction.method,
+            'category': transaction.category,
+            'amount': abs(transaction.amount),
+            'user': transaction.user,
+            'prevUrl': prevUrl
+        }
+        form = TransactionForm(initial=inital)
+        form.formId = 'updateTransaction'
+        form.action = '/transactions/' + str(id)
+        form.title = 'Expense Details' if isExpense else 'Income Details'
+        
+        return render(request, "tracker/fullPageForm.html", {'form': form})

@@ -11,5 +11,6 @@ urlpatterns = [
     path('logExpense/', views.logExpense, name='logExpense'),
     path('list/', views.listTransactions, name='list'),
     path('import/', views.importTransactions, name='import'),
+    path('transactions/<int:id>', views.transaction, name='transaction'),
     path('', views.index, name="index")
 ]
