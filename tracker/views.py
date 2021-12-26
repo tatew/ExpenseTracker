@@ -50,18 +50,29 @@ def logExpense(request):
                 user=request.user
             )
             expense.save()
-            expense.amount = expense.amount *-1
             return render(request, 'tracker/logExpenseSuccess.html', {'expense': expense})
         else:
-            return render(request, "tracker/fullPageForm.html", {'form': form})
+            context = {
+                'form': form,
+                'submit': True,
+                'cancelBack': True
+            }
+
+            return render(request, "tracker/fullPageForm.html", context)
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
         form = TransactionForm(initial={'prevUrl': prevUrl})
         form.formId = 'expenseForm'
         form.action = '/logExpense/'
         form.title = 'Log Expense'
+
+        context = {
+            'form': form,
+            'submit': True,
+            'cancelBack': True
+        }
         
-        return render(request, "tracker/fullPageForm.html", {'form': form})
+        return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
 def logIncome(request):
@@ -82,15 +93,27 @@ def logIncome(request):
             income.save()
             return render(request, 'tracker/logIncomeSuccess.html', {'income': income})
         else:
-            return render(request, "tracker/fullPageForm.html", {'form': form})
+            context = {
+                'form': form,
+                'submit': True,
+                'cancelBack': True
+            }
+
+            return render(request, "tracker/fullPageForm.html", context)
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
         form = TransactionForm(initial={'prevUrl': prevUrl})
         form.formId = 'incomeForm'
         form.action = '/logIncome/'
         form.title = 'Log Income'
+
+        context = {
+            'form': form,
+            'submit': True,
+            'cancelBack': True
+        }
         
-        return render(request, "tracker/fullPageForm.html", {'form': form})
+        return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
 def listTransactions(request):
@@ -100,7 +123,7 @@ def listTransactions(request):
         numToShow = int(request.POST['prevNumToShow']) + 10
 
     print(numToShow)
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')[:numToShow + 1]
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date', '-amount')[:numToShow + 1]
     
     hideShowMore = False
     if (transactions.count() < numToShow + 1):
@@ -170,7 +193,17 @@ def transaction(request, id):
 
             return render(request, 'tracker/transactionUpdateSuccess.html', { 'transaction': transaction })
         else:
-            return render(request, "tracker/fullPageForm.html", {'form': form})
+            context = {
+                'form': form,
+                'cancelBack': False,
+                'cancelDisable': True,
+                'delete': False,
+                'submit': True,
+                'edit': False,
+                'disableForm': False,
+                'id': id
+            }
+            return render(request, "tracker/fullPageForm.html", context)
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
 
@@ -189,4 +222,27 @@ def transaction(request, id):
         form.action = '/transactions/' + str(id)
         form.title = 'Expense Details' if isExpense else 'Income Details'
         
-        return render(request, "tracker/fullPageForm.html", {'form': form})
+        context = {
+            'form': form,
+            'cancelBack': True,
+            'cancelDisable': False,
+            'delete': True,
+            'submit': False,
+            'edit': True,
+            'disableForm': True,
+            'id': id
+        }
+
+        return render(request, "tracker/fullPageForm.html", context)
+
+def deleteConfirm(request, id):
+    transaction = Transaction.objects.get(id=id)
+    isExpense = transaction.amount < 0
+    if (request.method == "POST"):
+        transaction.delete()
+        return redirect('/list')
+    else:
+        context = {
+            'transaction': transaction
+        }
+        return render(request, 'tracker/deleteConfirm.html', context)

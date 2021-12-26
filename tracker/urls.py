@@ -12,5 +12,6 @@ urlpatterns = [
     path('list/', views.listTransactions, name='list'),
     path('import/', views.importTransactions, name='import'),
     path('transactions/<int:id>', views.transaction, name='transaction'),
+    path('transactions/<int:id>/delete', views.deleteConfirm, name="transactionDeleteConfirm"),
     path('', views.index, name="index")
 ]

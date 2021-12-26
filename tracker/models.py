@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.deletion import PROTECT
 from django.contrib import auth
+import datetime 
 
 # Create your models here.
 
@@ -29,4 +30,13 @@ class Transaction(models.Model):
     user = models.ForeignKey(auth.get_user_model(), on_delete=PROTECT)
 
     def __str__(self):
-        return f"${self.amount} on {self.date} at {self.vendor}"
+        typeOfTransaction = ""
+        fromOrAt = ""
+        if (self.amount < 0):
+            typeOfTransaction = "Expense"
+            fromOrAt = "at"
+        else:
+            typeOfTransaction = "Income"
+            fromOrAt = "from"
+        date = datetime.date.strftime(self.date, "%m/%d/%Y")
+        return f"{typeOfTransaction} of ${abs(self.amount)} on {date} {fromOrAt} {self.vendor}"

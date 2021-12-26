@@ -1,4 +1,99 @@
 {% load filters %}
+<script type="text/javascript">
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadForm();
+    });
+
+    function toggleEdit() {
+        inputs = document.getElementsByTagName('input');
+        selects = document.getElementsByTagName('select');
+        for (i = 0; i < inputs.length; i++) {
+            input = inputs[i];
+            if (input.getAttribute('disabled')) {
+                input.removeAttribute('disabled');
+            } else {
+                input.setAttribute('disabled', true);
+            }
+        }
+
+        for (i = 0; i < selects.length; i++) {
+            select = selects[i];
+            if (select.getAttribute('disabled')) {
+                select.removeAttribute('disabled');
+            } else {
+                select.setAttribute('disabled', true);
+            }
+        }
+    }
+
+    function clickCancelDisable() {
+        toggleEdit()
+        edit = document.getElementById('edit');
+        edit.setAttribute('style', 'display: inline');
+        cancelDisable = document.getElementById('cancelDisable');
+        cancelDisable.setAttribute('style', 'display: none');
+        submit = document.getElementById('submit');
+        submit.setAttribute('style', 'display: none')
+        deleteButton = document.getElementById('delete');
+        deleteButton.setAttribute('style', 'display: inline');
+    }
+
+    function clickEdit() {
+        toggleEdit()
+        edit = document.getElementById('edit');
+        edit.setAttribute('style', 'display: none');
+        cancelDisable = document.getElementById('cancelDisable');
+        cancelDisable.setAttribute('style', 'display: inline');
+        submit = document.getElementById('submit');
+        submit.setAttribute('style', 'display: inline')
+        deleteButton = document.getElementById('delete');
+        deleteButton.setAttribute('style', 'display: none');
+    }
+
+
+
+    function loadForm() {
+        if ('{{ disableForm }}') {
+            toggleEdit()
+        }
+
+        cancelBack = document.getElementById('cancelBack');
+        if ('{{ cancelBack }}' === 'True') {
+            cancelBack.setAttribute('style', 'display: inline');
+        } else {
+            cancelBack.setAttribute('style', 'display: none');
+        }
+
+        cancelDisable = document.getElementById('cancelDisable');
+        if ('{{ cancelDisable }}' === 'True') {
+            cancelDisable.setAttribute('style', 'display: inline');
+        } else {
+            cancelDisable.setAttribute('style', 'display: none');
+        }
+
+        deleteButton = document.getElementById('delete');
+        if ('{{ delete }}' === 'True') {
+            deleteButton.setAttribute('style', 'display: inline');
+        } else {
+            deleteButton.setAttribute('style', 'display: none');
+        }
+
+        edit = document.getElementById('edit');
+        if ('{{ edit }}' === 'True') {
+            edit.setAttribute('style', 'display: inline');
+        } else {
+            edit.setAttribute('style', 'display: none');
+        }
+
+        submit = document.getElementById('submit');
+        if ('{{ submit }}' === 'True') {
+            submit.setAttribute('style', 'display: inline');
+        } else {
+            submit.setAttribute('style', 'display: none');
+        }
+    }
+</script>
 <form id="{{ form.formId }}" method="post" action="{{ form.action }}" {% if form.hasEncType %} enctype="{{ form.enctype }}" {% endif %}>
     {% csrf_token %}
     <div class="form" id="form">
@@ -13,6 +108,9 @@
     </div>
 </form>
 <div class="form-submit">
-    <a href="/{{ form.prevUrl.value }}" class="btn btn-primary">Cancel<i class="bi bi-x-lg icon-right"></i></a>
+    <a id="cancelBack" href="/{{ form.prevUrl.value }}" class="btn btn-primary"><i class="bi bi-arrow-left icon-left"></i>Back</a>
+    <button id="cancelDisable" onclick="clickCancelDisable()" class="btn btn-primary">Cancel<i class="bi bi-x-lg icon-right"></i></button>
+    <button id="edit" onclick="clickEdit()" class="btn btn-primary">Edit<i class="bi bi-pencil-square icon-right"></i></button>
+    <a id="delete" href="/transactions/{{ id }}/delete" class="btn btn-primary">Delete<i class="bi bi-x-lg icon-right"></i></a>
     <button id="submit" form="{{ form.formId }}" type="submit" class="btn btn-primary">Submit<i class="bi bi-check2-square icon-right"></i></button>
 </div>
