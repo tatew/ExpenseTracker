@@ -24,8 +24,6 @@ def internalServerError(request):
 
 @login_required
 def home(request):
-    print(type(settings.DEBUG))
-    print(settings.DEBUG)
     transactionsForThisMonth = Transaction.objects.filter(date__month=datetime.datetime.now().month, user=request.user)
     
     sumOfTransactions = transactionsForThisMonth.aggregate(Sum('amount'))['amount__sum']
