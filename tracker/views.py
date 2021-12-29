@@ -8,7 +8,6 @@ from .services import importTransactionsCsv
 import csv
 import io
 from django.db.models import Sum
-from django.conf import settings
 
 def index(request):
     if request.user.is_authenticated:
