@@ -1,4 +1,5 @@
 import datetime
+from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, Category, Method
@@ -7,6 +8,7 @@ from .services import importTransactionsCsv
 import csv
 import io
 from django.db.models import Sum
+from django.conf import settings
 
 def index(request):
     if request.user.is_authenticated:
@@ -14,8 +16,16 @@ def index(request):
     else:
         return render(request, "tracker/index.html")
 
+def notFound(request, exception):
+    return render(request, 'tracker/notFound.html')
+
+def internalServerError(request):
+    return render(request, 'tracker/internalServerError.html')
+
 @login_required
 def home(request):
+    print(type(settings.DEBUG))
+    print(settings.DEBUG)
     transactionsForThisMonth = Transaction.objects.filter(date__month=datetime.datetime.now().month, user=request.user)
     
     sumOfTransactions = transactionsForThisMonth.aggregate(Sum('amount'))['amount__sum']
@@ -173,6 +183,9 @@ def importTransactions(request):
 @login_required
 def transaction(request, id):
     transaction = Transaction.objects.get(id=id)
+    if (transaction.user != request.user):
+        raise Http404
+
     isExpense = transaction.amount < 0
 
     if (request.method == "POST"):
@@ -240,7 +253,7 @@ def deleteConfirm(request, id):
     isExpense = transaction.amount < 0
     if (request.method == "POST"):
         transaction.delete()
-        return redirect('/list')
+        return redirect('/transactions')
     else:
         context = {
             'transaction': transaction

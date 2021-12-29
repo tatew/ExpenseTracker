@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="content small-content">
+        <h2>Error</h2>
+        <p>404 - Page Not Found</p>
+        <a href="{% url 'home' %}" class="btn btn-primary">Home<i class="bi bi-house icon-right"></i></a>
+    </div>
+{% endblock %}

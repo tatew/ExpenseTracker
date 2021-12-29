@@ -20,7 +20,7 @@
                     <th>Delete</th> -->
                 </thead>
                 {% for transaction in transactions %}
-                    <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=list'">
+                    <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=transactions'">
                         <td>{{ transaction.dateStr }}</td>
                         <td>{{ transaction.vendor }}</td>
                         <td>{{ transaction.reason }}</td>
@@ -33,7 +33,7 @@
         </div>
         <p>Showing {{ transactions.count }} transactions</p>
         {% if not hideShowMore %}
-            <form method="post" action="{% url 'list' %}">
+            <form method="post" action="{% url 'transactions' %}">
                 {% csrf_token %}
                 <input hidden name="prevNumToShow" type="number" value="{{ prevNumToShow }}">
                 <button type="submit" class="btn btn-primary">Show More<i class="bi bi-plus-lg icon-right"></i></button>

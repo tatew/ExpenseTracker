@@ -10,7 +10,7 @@
             <p>Transaction of ${{ transaction.amount }} at {{ transaction.vendor }} on {{ transaction.date }} was successfully updated.</p>
         </div>
         <div class="end-buttons">
-            <a class="btn btn-primary" href="{% url 'list' %}">List<i class="bi bi-list-ul icon-right"></i></a>
+            <a class="btn btn-primary" href="{% url 'transactions' %}">List<i class="bi bi-list-ul icon-right"></i></a>
             <a class="btn btn-primary" href="/transactions/{{transaction.id}}">Expense Details<i class="bi bi-receipt icon-right"></i></i></a>
         </div>
     </div>
