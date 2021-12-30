@@ -72,6 +72,7 @@ tr.clickable:hover {
     text-decoration: none;
     padding: 0.5rem;
     font-size: 1rem;
+    text-align: center;
 }
 
 button.btn {
@@ -145,19 +146,38 @@ button.btn {
     row-gap: 0.5rem;
 }
 
-.form-mobile {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
 .form .errorlist {
     grid-column-start: 1;
     grid-column-end: 3;
 }
 
+@media screen and (max-width: 480px) {
+    .form-submit {
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.5rem;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
 .end-buttons {
     margin-top: 1rem;
+}
+
+@media screen and (max-width: 1000px) {
+    .end-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0;
+    }
 }
 
 .cards {

@@ -11,15 +11,4 @@ window.onload = function() {
   } else {
     title.innerHTML = '<i class="bi bi-piggy-bank-fill" id="headerLogo"></i>SimpleTracker'
   }
-  formForMobile();
 };
-
-function formForMobile() {
-  if (onMobile()){
-    var form = document.getElementById("form");
-    form.setAttribute("class", "form-mobile")
-  } else {
-    var form = document.getElementById("form-mobile");
-    form.setAttribute("class", "form")
-  }
-}
