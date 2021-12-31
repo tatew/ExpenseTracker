@@ -1,4 +1,5 @@
 import datetime
+from typing import ContextManager
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -126,10 +127,8 @@ def logIncome(request):
 def listTransactions(request):
     numToShow = 10
     if (request.method == "POST"):
-        print(request.POST)
         numToShow = int(request.POST['prevNumToShow']) + 10
 
-    print(numToShow)
     transactions = Transaction.objects.filter(user=request.user).order_by('-date', '-amount')[:numToShow + 1]
     
     hideShowMore = False
@@ -247,7 +246,6 @@ def transaction(request, id):
 
 def deleteConfirm(request, id):
     transaction = Transaction.objects.get(id=id)
-    isExpense = transaction.amount < 0
     if (request.method == "POST"):
         transaction.delete()
         return redirect('/transactions')
@@ -256,3 +254,19 @@ def deleteConfirm(request, id):
             'transaction': transaction
         }
         return render(request, 'tracker/deleteConfirm.html', context)
+
+def dashboard(request):
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    incomes = transactions.filter(amount__gt=0)
+    expenses = transactions.filter(amount__lt=0)
+    incomesByDate = incomes.values('date').order_by('date').annotate(total=Sum('amount'))
+    expensesByDate = expenses.values('date').order_by('date').annotate(total=Sum('amount'))
+    netByDate = transactions.values('date').order_by('date').annotate(total=Sum('amount'))
+    context = {
+        'transactionData': {
+            'incomesByDate': list(incomesByDate),
+            'expensesByDate': list(expensesByDate),
+            'netByDate': list(netByDate)
+        }
+    }
+    return render(request, 'tracker/dashboard.html', context)

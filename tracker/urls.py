@@ -9,9 +9,10 @@ urlpatterns = [
     path('chooseTransactionType/', views.chooseTransactionType, name='chooseTransactionType'),
     path('logIncome/', views.logIncome, name='logIncome'),
     path('logExpense/', views.logExpense, name='logExpense'),
-    path('transactions/', views.listTransactions, name='transactions'),
     path('import/', views.importTransactions, name='import'),
+    path('transactions/', views.listTransactions, name='transactions'),
     path('transactions/<int:id>', views.transaction, name='transaction'),
     path('transactions/<int:id>/delete', views.deleteConfirm, name="transactionDeleteConfirm"),
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('', views.index, name="index")
 ]

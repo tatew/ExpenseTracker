@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="content large-content">
+        <h2>Dashboard</h2>
+        <div>
+            <canvas id="myChart" width="600px" height="600px"></canvas>
+            {{transactionData|json_script:"transactionData"}}
+            <script type="text/javascript" src="{% static 'tracker/charts.js' %}"></script>
+            
+        </div>
+    </div>
+{% endblock %}
