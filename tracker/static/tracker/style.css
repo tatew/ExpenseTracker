@@ -233,6 +233,25 @@ button.btn {
     white-space: nowrap;
 }
 
+.chartTile {
+    width: 100%
+}
+
+.chartTile {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filters {
+    border: 0.1rem solid white;
+    border-radius: 0.4rem;
+}
+
+.mainChart {
+    border: 0.1rem solid white;
+    border-radius: 0.4rem;
+}
+
 /* Base */
 
 #siteTitle a {

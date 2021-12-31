@@ -1,14 +1,15 @@
 import datetime
-from typing import ContextManager
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, Category, Method
-from .forms import TransactionForm, ImportForm
+from .forms import TransactionForm, ImportForm, ChartFilterForm
 from .services import importTransactionsCsv
 import csv
 import io
 from django.db.models import Sum
+from calendar import monthrange
+from .utilities import fillOutNetTransactions, convertToRunningTotal
 
 def index(request):
     if request.user.is_authenticated:
@@ -256,17 +257,29 @@ def deleteConfirm(request, id):
         return render(request, 'tracker/deleteConfirm.html', context)
 
 def dashboard(request):
+
+    if (request.method == 'POST'):
+        print(request['POST'])
+
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     incomes = transactions.filter(amount__gt=0)
     expenses = transactions.filter(amount__lt=0)
     incomesByDate = incomes.values('date').order_by('date').annotate(total=Sum('amount'))
     expensesByDate = expenses.values('date').order_by('date').annotate(total=Sum('amount'))
     netByDate = transactions.values('date').order_by('date').annotate(total=Sum('amount'))
+    startDate = datetime.datetime(2021, 12, 1)
+    endDate = datetime.datetime(2021, 12, 31)
+    netByDate = fillOutNetTransactions(netByDate, startDate, endDate)
+    netByDate = convertToRunningTotal(netByDate)
+
+    form = ChartFilterForm(initial={'startDate': startDate, 'endDate': endDate})
+
     context = {
         'transactionData': {
             'incomesByDate': list(incomesByDate),
             'expensesByDate': list(expensesByDate),
             'netByDate': list(netByDate)
-        }
+        },
+        'form': form
     }
     return render(request, 'tracker/dashboard.html', context)
