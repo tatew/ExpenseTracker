@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="content large-content">
+    <div class="content big-content">
         <h2>Dashboard</h2>
         <div class="dashboard">
             <div class="chartTile">
@@ -12,10 +12,10 @@
                     {% include "tracker/form.html" %}
                 </div>
                 <div class="mainChart">
-                    <canvas id="myChart" width="600px" height="600px"></canvas>
-                    {{transactionData|json_script:"transactionData"}}
-                    <script type="text/javascript" src="{% static 'tracker/charts.js' %}"></script>
+                    <canvas id="myChart"></canvas>
                 </div>
+                {{transactionData|json_script:"transactionData"}}
+                <script type="text/javascript" src="{% static 'tracker/charts.js' %}"></script>
             </div>
         </div>
     </div>

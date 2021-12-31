@@ -31,8 +31,6 @@ def home(request):
     if (sumOfTransactions == None):
         sumOfTransactions = 0
     
-
-
     context = {
         'monthlyBalance': "{:,.2f}".format(sumOfTransactions)
     }
@@ -257,9 +255,13 @@ def deleteConfirm(request, id):
         return render(request, 'tracker/deleteConfirm.html', context)
 
 def dashboard(request):
-
+    startDate = datetime.datetime(2021, 12, 1)
+    endDate = datetime.datetime(2021, 12, 31)
     if (request.method == 'POST'):
-        print(request['POST'])
+        form = ChartFilterForm(request.POST)
+        if (form.is_valid()):
+            startDate = form.cleaned_data['startDate']
+            endDate = form.cleaned_data['endDate']
 
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     incomes = transactions.filter(amount__gt=0)
@@ -267,8 +269,7 @@ def dashboard(request):
     incomesByDate = incomes.values('date').order_by('date').annotate(total=Sum('amount'))
     expensesByDate = expenses.values('date').order_by('date').annotate(total=Sum('amount'))
     netByDate = transactions.values('date').order_by('date').annotate(total=Sum('amount'))
-    startDate = datetime.datetime(2021, 12, 1)
-    endDate = datetime.datetime(2021, 12, 31)
+    
     netByDate = fillOutNetTransactions(netByDate, startDate, endDate)
     netByDate = convertToRunningTotal(netByDate)
 
@@ -278,8 +279,10 @@ def dashboard(request):
         'transactionData': {
             'incomesByDate': list(incomesByDate),
             'expensesByDate': list(expensesByDate),
-            'netByDate': list(netByDate)
+            'netByDate': list(netByDate),
+            'timelineChartTitle': 'Balance'
         },
-        'form': form
+        'form': form,
+        'submit': True,
     }
     return render(request, 'tracker/dashboard.html', context)

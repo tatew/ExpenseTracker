@@ -233,23 +233,57 @@ button.btn {
     white-space: nowrap;
 }
 
-.chartTile {
-    width: 100%
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
 .chartTile {
     display: flex;
+    justify-content: center;
     gap: 0.5rem;
+    width: 100%;
+}
+
+@media screen and (max-width: 850px) {
+    .chartTile {
+        flex-direction: column;
+    }
+}
+
+.chartTile div {
+    padding: 1rem
 }
 
 .filters {
     border: 0.1rem solid white;
     border-radius: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .mainChart {
     border: 0.1rem solid white;
     border-radius: 0.4rem;
+    background-color: #212529;
+    width: 60%;
+    height: 20rem;
+    position: relative;
+}
+
+@media screen and (max-width: 850px) {
+    .mainChart {
+        width: 95%;
+    }
 }
 
 /* Base */
