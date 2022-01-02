@@ -7,16 +7,15 @@
     <div class="content big-content">
         <h2>Dashboard</h2>
         <div class="dashboard">
-            <div class="chartTile">
-                <div class="filters">
-                    {% include "tracker/form.html" %}
-                </div>
-                <div class="mainChart">
-                    <canvas id="myChart"></canvas>
-                </div>
-                {{transactionData|json_script:"transactionData"}}
-                <script type="text/javascript" src="{% static 'tracker/charts.js' %}"></script>
+            <div class="filters">
+                <h3 id="filterTitle">Filter</h3>
+                {% include "tracker/form.html" %}
             </div>
+            <div class="mainChart">
+                <canvas id="myChart"></canvas>
+            </div>
+            {{transactionData|json_script:"transactionData"}}
+            <script type="text/javascript" src="{% static 'tracker/charts.js' %}"></script>
         </div>
     </div>
 {% endblock %}

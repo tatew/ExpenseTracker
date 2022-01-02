@@ -9,7 +9,7 @@ class TransactionForm(ModelForm):
     formId = ''
     action = ''
     title = ''
-    formClass = 'form'
+    formWrapperClass = 'form-wrapper'
 
     iconClasses = {
         'date': 'bi bi-calendar-date icon-left',
@@ -40,7 +40,7 @@ class ImportForm(forms.Form):
     action = '/import/'
     hasEncType = True
     enctype = 'multipart/form-data'
-    formClass = 'form'
+    formWrapperClass = 'form-wrapper'
 
     iconClasses = {
         'csvFile': 'bi bi-file-earmark-plus icon-left'
@@ -53,7 +53,7 @@ class ChartFilterForm(forms.Form):
     formId = 'chartFilterForm'
     action = '/dashboard/'
     title = 'Filter Chart'
-    formClass = 'filter-form'
+    formWrapperClass = 'filter-form-wrapper'
 
     iconClasses = {
         'startDate': 'bi bi-calendar-date icon-left',

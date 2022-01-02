@@ -34,6 +34,17 @@ const config = {
                     color: gridColor
                 }
             }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Balance Over Time',
+                color: '#FFFFFF',
+                font: {
+                    weight: 'bold',
+                    size: '20'
+                }
+            }
         }
     }
 };

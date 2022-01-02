@@ -13,7 +13,7 @@ nav {
     justify-content: space-between;
 }
 
-h1, h2 {
+h1, h2, h3, h4 {
     margin: 0;
 }
 
@@ -139,10 +139,19 @@ button.btn {
     text-align: center;
 }
 
+.form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 60%;
+    margin: 1rem;
+}
+
 .form {
     display: grid;
     grid-template-columns: 35% 65%;
-    width: 60%;
+    width: 100%;
     row-gap: 0.5rem;
 }
 
@@ -238,23 +247,7 @@ button.btn {
     flex-direction: column;
     align-items: center;
     width: 100%;
-}
-
-.chartTile {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-}
-
-@media screen and (max-width: 850px) {
-    .chartTile {
-        flex-direction: column;
-    }
-}
-
-.chartTile div {
-    padding: 1rem
+    gap: 1rem;
 }
 
 .filters {
@@ -263,27 +256,26 @@ button.btn {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
 }
 
-.filter-form {
+.filter-form-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 1rem;
+    width: 60%;
 }
 
 .mainChart {
     border: 0.1rem solid white;
     border-radius: 0.4rem;
     background-color: #212529;
-    width: 60%;
-    height: 20rem;
+    width: 100%;
+    height: 50vh;
     position: relative;
-}
-
-@media screen and (max-width: 850px) {
-    .mainChart {
-        width: 95%;
-    }
 }
 
 /* Base */
@@ -344,4 +336,9 @@ button.btn {
 /* Import Results */
 #results {
     width: 80%;
+}
+
+/* Dashboard */
+#filterTitle {
+    margin-bottom: 1rem;
 }

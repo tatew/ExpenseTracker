@@ -169,11 +169,19 @@ def importTransactions(request):
             }
             return render(request, 'tracker/importResults.html', context)
         else:
-            return render(request, 'tracker/import.html', {'form': form})
+            context = {
+                'form': form,
+                'submit': True
+            }
+            return render(request, 'tracker/import.html', context)
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
         form = ImportForm(initial={'prevUrl': prevUrl})
-        return render(request, 'tracker/import.html', {'form': form})
+        context = {
+            'form': form,
+            'submit': True
+        }
+        return render(request, 'tracker/import.html', context)
 
 @login_required
 def transaction(request, id):

@@ -94,23 +94,25 @@
         }
     }
 </script>
-<form id="{{ form.formId }}" method="post" action="{{ form.action }}" {% if form.hasEncType %} enctype="{{ form.enctype }}" {% endif %}>
-    {% csrf_token %}
-    <div class="{{ form.formClass }}" id="form">
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        {% for field in form.visible_fields %}
-            <label for="{{ field.id_for_label }}"><i class="{{ form.iconClasses|get_value:field.name }}"></i>{{ field.label }}</label>
-            {{ field }}
-            {{ field.errors }}
-        {% endfor %}
+<div class="{{ form.formWrapperClass }}">
+    <form id="{{ form.formId }}" method="post" action="{{ form.action }}" {% if form.hasEncType %} enctype="{{ form.enctype }}" {% endif %}>
+        {% csrf_token %}
+        <div class="form" id="form">
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <label for="{{ field.id_for_label }}"><i class="{{ form.iconClasses|get_value:field.name }}"></i>{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            {% endfor %}
+        </div>
+    </form>
+    <div class="form-submit">
+        <a id="cancelBack" href="/{{ form.prevUrl.value }}" class="btn btn-primary"><i class="bi bi-arrow-left icon-left"></i>Back</a>
+        <button id="cancelDisable" onclick="clickCancelDisable()" class="btn btn-primary">Cancel<i class="bi bi-x-lg icon-right"></i></button>
+        <button id="edit" onclick="clickEdit()" class="btn btn-primary">Edit<i class="bi bi-pencil-square icon-right"></i></button>
+        <a id="delete" href="/transactions/{{ id }}/delete" class="btn btn-primary">Delete<i class="bi bi-x-lg icon-right"></i></a>
+        <button id="submit" form="{{ form.formId }}" type="submit" class="btn btn-primary">Submit<i class="bi bi-check2-square icon-right"></i></button>
     </div>
-</form>
-<div class="form-submit">
-    <a id="cancelBack" href="/{{ form.prevUrl.value }}" class="btn btn-primary"><i class="bi bi-arrow-left icon-left"></i>Back</a>
-    <button id="cancelDisable" onclick="clickCancelDisable()" class="btn btn-primary">Cancel<i class="bi bi-x-lg icon-right"></i></button>
-    <button id="edit" onclick="clickEdit()" class="btn btn-primary">Edit<i class="bi bi-pencil-square icon-right"></i></button>
-    <a id="delete" href="/transactions/{{ id }}/delete" class="btn btn-primary">Delete<i class="bi bi-x-lg icon-right"></i></a>
-    <button id="submit" form="{{ form.formId }}" type="submit" class="btn btn-primary">Submit<i class="bi bi-check2-square icon-right"></i></button>
 </div>
