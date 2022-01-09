@@ -11,11 +11,14 @@
                 <h3 id="filterTitle">Filter</h3>
                 {% include "tracker/form.html" %}
             </div>
-            <div class="mainChart">
-                <canvas id="myChart"></canvas>
+            <div class="chartTile">
+                <canvas id="runningTransactionTotal"></canvas>
+            </div>
+            <div class="chartTile">
+                <canvas id="transactionsByDate"></canvas>
             </div>
             {{transactionData|json_script:"transactionData"}}
-            <script type="text/javascript" src="{% static 'tracker/charts.js' %}"></script>
+            <script type="text/javascript" src="{% static 'tracker/dashboard.js' %}"></script>
         </div>
     </div>
 {% endblock %}

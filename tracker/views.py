@@ -9,7 +9,7 @@ import csv
 import io
 from django.db.models import Sum
 from calendar import monthrange
-from .utilities import fillOutNetTransactions, convertToRunningTotal
+from .utilities import fillOutTransactions, convertToRunningTotal
 
 def index(request):
     if request.user.is_authenticated:
@@ -263,26 +263,32 @@ def deleteConfirm(request, id):
         return render(request, 'tracker/deleteConfirm.html', context)
 
 def dashboard(request):
-    currentYear = datetime.datetime.now().year
-    currentMonth = datetime.datetime.now().month
+    currentYear = 2021
+    currentMonth = 12
     numberOfdays = monthrange(currentYear, currentMonth)[1]
     startDate = datetime.datetime(currentYear, currentMonth, 1)
     endDate = datetime.datetime(currentYear, currentMonth, numberOfdays)
+
     if (request.method == 'POST'):
         form = ChartFilterForm(request.POST)
         if (form.is_valid()):
             startDate = form.cleaned_data['startDate']
             endDate = form.cleaned_data['endDate']
 
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    transactions = Transaction.objects.filter(user=request.user, date__gte=startDate, date__lte=endDate).order_by('-date')
+    
     incomes = transactions.filter(amount__gt=0)
     expenses = transactions.filter(amount__lt=0)
+
     incomesByDate = incomes.values('date').order_by('date').annotate(total=Sum('amount'))
     expensesByDate = expenses.values('date').order_by('date').annotate(total=Sum('amount'))
     netByDate = transactions.values('date').order_by('date').annotate(total=Sum('amount'))
     
-    netByDate = fillOutNetTransactions(netByDate, startDate, endDate)
+    netByDate = fillOutTransactions(netByDate, startDate, endDate)
     netByDate = convertToRunningTotal(netByDate)
+
+    incomesByDate = fillOutTransactions(incomesByDate, startDate, endDate)
+    expensesByDate = fillOutTransactions(expensesByDate, startDate, endDate)
 
     form = ChartFilterForm(initial={'startDate': startDate, 'endDate': endDate})
 
@@ -290,8 +296,7 @@ def dashboard(request):
         'transactionData': {
             'incomesByDate': list(incomesByDate),
             'expensesByDate': list(expensesByDate),
-            'netByDate': list(netByDate),
-            'timelineChartTitle': 'Balance'
+            'netByDate': list(netByDate)
         },
         'form': form,
         'submit': True,

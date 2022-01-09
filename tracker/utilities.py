@@ -1,28 +1,28 @@
 from .models import Transaction
 from datetime import datetime, timedelta, date
 
-def fillOutNetTransactions(netTransactions, startDate, endDate):
+def fillOutTransactions(transactions, startDate, endDate):
 
     currentDate = startDate
-    resultNetTransactions = []
+    resultTransactions = []
     while (currentDate <= endDate):
         try: 
-            netTransactionForDate = netTransactions.get(date=currentDate)
-            resultNetTransactions.append(netTransactionForDate)
+            transactionForDate = transactions.get(date=currentDate)
+            resultTransactions.append(transactionForDate)
         except:
             fillerNetTransaction = {
                 'date': date(currentDate.year, currentDate.month, currentDate.day),
                 'total': 0
             }
-            resultNetTransactions.append(fillerNetTransaction)
+            resultTransactions.append(fillerNetTransaction)
         currentDate = currentDate + timedelta(days=1)
 
-    return resultNetTransactions
+    return resultTransactions
 
-def convertToRunningTotal(netTransactions):
-    prevNetTransaction = 0
-    for netTransaction in netTransactions:
-        netTransaction['total'] = netTransaction['total'] + prevNetTransaction
-        prevNetTransaction = netTransaction['total']
+def convertToRunningTotal(transactions):
+    prevTransaction = 0
+    for transaction in transactions:
+        transaction['total'] = transaction['total'] + prevTransaction
+        prevTransaction = transaction['total']
 
-    return netTransactions
+    return transactions
