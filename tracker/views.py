@@ -263,8 +263,8 @@ def deleteConfirm(request, id):
         return render(request, 'tracker/deleteConfirm.html', context)
 
 def dashboard(request):
-    currentYear = 2021
-    currentMonth = 12
+    currentYear = datetime.datetime.now().year
+    currentMonth = datetime.datetime.now().month
     numberOfdays = monthrange(currentYear, currentMonth)[1]
     startDate = datetime.datetime(currentYear, currentMonth, 1)
     endDate = datetime.datetime(currentYear, currentMonth, numberOfdays)
@@ -276,7 +276,7 @@ def dashboard(request):
             endDate = form.cleaned_data['endDate']
 
     transactions = Transaction.objects.filter(user=request.user, date__gte=startDate, date__lte=endDate).order_by('-date')
-    
+
     incomes = transactions.filter(amount__gt=0)
     expenses = transactions.filter(amount__lt=0)
 
