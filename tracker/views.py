@@ -263,8 +263,11 @@ def deleteConfirm(request, id):
         return render(request, 'tracker/deleteConfirm.html', context)
 
 def dashboard(request):
-    startDate = datetime.datetime(2021, 12, 1)
-    endDate = datetime.datetime(2021, 12, 31)
+    currentYear = datetime.datetime.now().year
+    currentMonth = datetime.datetime.now().month
+    numberOfdays = monthrange(currentYear, currentMonth)[1]
+    startDate = datetime.datetime(currentYear, currentMonth, 1)
+    endDate = datetime.datetime(currentYear, currentMonth, numberOfdays)
     if (request.method == 'POST'):
         form = ChartFilterForm(request.POST)
         if (form.is_valid()):
