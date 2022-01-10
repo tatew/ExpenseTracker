@@ -17,6 +17,9 @@
             <div class="chartTile">
                 <canvas id="transactionsByDate"></canvas>
             </div>
+            <div class="chartTile">
+                <canvas id="expensesPerCategory"></canvas>
+            </div>
             {{transactionData|json_script:"transactionData"}}
             <script type="text/javascript" src="{% static 'tracker/dashboard.js' %}"></script>
         </div>

@@ -290,13 +290,24 @@ def dashboard(request):
     incomesByDate = fillOutTransactions(incomesByDate, startDate, endDate)
     expensesByDate = fillOutTransactions(expensesByDate, startDate, endDate)
 
+    categories = Category.objects.all()
+    categoryData = []
+    for category in categories:
+        if (str(category) != 'Income'):
+            transactionsInCategory = transactions.filter(category=category).count()
+            categoryData.append({
+                'name': str(category),
+                'count': transactionsInCategory
+            })
+
     form = ChartFilterForm(initial={'startDate': startDate, 'endDate': endDate})
 
     context = {
         'transactionData': {
             'incomesByDate': list(incomesByDate),
             'expensesByDate': list(expensesByDate),
-            'netByDate': list(netByDate)
+            'netByDate': list(netByDate),
+            'categoryData': categoryData
         },
         'form': form,
         'submit': True,
