@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="content big-content">
+    <div class="content huge-content">
         <h2 class="page-title">Transactions</h2>
         <div class="list">
             <table>
@@ -16,8 +16,6 @@
                     <th>Method</th>
                     <th>Category</th>
                     <th>Amount</th>
-                    <!-- <th>Edit</th>
-                    <th>Delete</th> -->
                 </thead>
                 {% for transaction in transactions %}
                     <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=transactions'">

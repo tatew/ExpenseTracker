@@ -4,21 +4,25 @@
 {% endblock %}
 
 {% block content %}
-    <div class="content big-content">
+    <div class="content huge-content">
         <h2>Dashboard</h2>
         <div class="dashboard">
-            <div class="filters">
-                <h3 id="filterTitle">Filter</h3>
-                {% include "tracker/form.html" %}
+            <div class="filter-wrapper">
+                <div class="filters">
+                    <h3 id="filterTitle">Filter Charts</h3>
+                    {% include "tracker/form.html" %}
+                </div>
             </div>
-            <div class="chartTile">
-                <canvas id="runningTransactionTotal"></canvas>
-            </div>
-            <div class="chartTile">
-                <canvas id="transactionsByDate"></canvas>
-            </div>
-            <div class="chartTile">
-                <canvas id="expensesPerCategory"></canvas>
+            <div class="charts">
+                <div class="chartTile">
+                    <canvas class="chartCanvas" id="runningTransactionTotal"></canvas>
+                </div>
+                <div class="chartTile">
+                    <canvas class="chartCanvas" id="transactionsByDate"></canvas>
+                </div>
+                <div class="chartTile">
+                    <canvas class="chartCanvas" id="expensesPerCategory"></canvas>
+                </div>
             </div>
             {{transactionData|json_script:"transactionData"}}
             <script type="text/javascript" src="{% static 'tracker/dashboard.js' %}"></script>

@@ -133,8 +133,7 @@ const expensesPerCategoryData = {
     datasets: [{
         label: 'Categories',
         data: expensesPerCategoryCounts,
-        backgroundColor: [red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink],
-        hoverOffset: 5
+        backgroundColor: [red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink]
     }],
 };
 
