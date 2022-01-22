@@ -4,12 +4,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, Category, Method
 from .forms import TransactionForm, ImportForm, ChartFilterForm
-from .services import importTransactionsCsv
+from .services.importService import importTransactionsCsv
 import csv
 import io
 from django.db.models import Sum
 from calendar import monthrange
 from .utilities import fillOutTransactions, convertToRunningTotal
+from .services.dataService import getMonthlyResultsData
 
 def index(request):
     if request.user.is_authenticated:
@@ -275,6 +276,14 @@ def dashboard(request):
             startDate = form.cleaned_data['startDate']
             endDate = form.cleaned_data['endDate']
 
+    # Data for monthly-results 
+
+    monthlyResultsData = getMonthlyResultsData()
+    print(monthlyResultsData)
+
+    # end data for monthly-results
+
+    # Data for chart-section
     transactions = Transaction.objects.filter(user=request.user, date__gte=startDate, date__lte=endDate).order_by('-date')
 
     incomes = transactions.filter(amount__gt=0)
@@ -303,6 +312,8 @@ def dashboard(request):
                 'name': str(category),
                 'total': totalForCategory
             })
+
+    #end data for charts-section
 
     form = ChartFilterForm(initial={'startDate': startDate, 'endDate': endDate})
 

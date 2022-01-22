@@ -1,4 +1,4 @@
-from .models import Transaction
+from .models import Category, Method
 from datetime import datetime, timedelta, date
 
 def fillOutTransactions(transactions, startDate, endDate):
@@ -26,3 +26,28 @@ def convertToRunningTotal(transactions):
         prevTransaction = transaction['total']
 
     return transactions
+
+def lookupMethod(methodStr):
+    try:
+        existingMethod = Method.objects.get(name=methodStr)
+    except:
+        firstLetter = methodStr[0].upper()
+        methodStr = methodStr[1:]
+        methodStr = firstLetter + methodStr
+        method = Method(name=methodStr)
+        method.save()
+        return method
+    return existingMethod
+
+
+def lookupCategory(categoryStr):
+    try:
+        existingCategory = Category.objects.get(name=categoryStr)
+    except:
+        firstLetter = categoryStr[0].upper()
+        categoryStr = categoryStr[1:]
+        categoryStr = firstLetter + categoryStr
+        category = Category(name=categoryStr)
+        category.save()
+        return category
+    return existingCategory
