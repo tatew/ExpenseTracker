@@ -294,10 +294,10 @@ def dashboard(request):
     categoryData = []
     for category in categories:
         if (str(category) != 'Income'):
-            transactionsInCategory = transactions.filter(category=category).count()
+            totalForCategory = abs(transactions.filter(category=category).aggregate(Sum('amount'))['amount__sum'])
             categoryData.append({
                 'name': str(category),
-                'count': transactionsInCategory
+                'total': totalForCategory
             })
 
     form = ChartFilterForm(initial={'startDate': startDate, 'endDate': endDate})

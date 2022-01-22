@@ -126,13 +126,13 @@ const transactionsByDate = new Chart(
 );
 
 const categories = transactionData.categoryData.map(c => c.name);
-const expensesPerCategoryCounts = transactionData.categoryData.map(c => parseInt(c.count));
+const amountPerCategory = transactionData.categoryData.map(c => parseInt(c.total));
 
 const expensesPerCategoryData = {
     labels: categories,
     datasets: [{
         label: 'Categories',
-        data: expensesPerCategoryCounts,
+        data: amountPerCategory,
         backgroundColor: [red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink]
     }],
 };
@@ -147,7 +147,7 @@ const expensesPerCategoryConfig = {
         plugins: {
             title: {
                 display: true,
-                text: 'Expenses Per Category',
+                text: 'Total Expenses by Category',
                 color: '#FFFFFF',
                 font: {
                     weight: 'bold',
@@ -157,6 +157,21 @@ const expensesPerCategoryConfig = {
             legend: {
                 position: 'left',
                 display: display
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.label || '';
+
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed !== null) {
+                            label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed);
+                        }
+                        return label;
+                    }
+                }
             }
         }
     }
