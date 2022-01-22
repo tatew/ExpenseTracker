@@ -294,7 +294,11 @@ def dashboard(request):
     categoryData = []
     for category in categories:
         if (str(category) != 'Income'):
-            totalForCategory = abs(transactions.filter(category=category).aggregate(Sum('amount'))['amount__sum'])
+            totalForCategory = transactions.filter(category=category).aggregate(Sum('amount'))['amount__sum']
+            if (totalForCategory != None):
+                totalForCategory = abs(totalForCategory)
+            else: 
+                totalForCategory = 0
             categoryData.append({
                 'name': str(category),
                 'total': totalForCategory
