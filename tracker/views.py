@@ -10,7 +10,7 @@ import io
 from django.db.models import Sum
 from calendar import monthrange
 from .utilities import fillOutTransactions, convertToRunningTotal
-from .services.dataService import getMonthlyResultsData
+from .services import dataService
 
 def index(request):
     if request.user.is_authenticated:
@@ -26,9 +26,7 @@ def internalServerError(request):
 
 @login_required
 def home(request):
-    transactionsForThisMonth = Transaction.objects.filter(date__month=datetime.datetime.now().month, user=request.user)
-    
-    sumOfTransactions = transactionsForThisMonth.aggregate(Sum('amount'))['amount__sum']
+    sumOfTransactions = dataService.getSumOfTransactionsForMonth(request.user, datetime.datetime.now().month)
     if (sumOfTransactions == None):
         sumOfTransactions = 0
     
@@ -129,7 +127,7 @@ def listTransactions(request):
     if (request.method == "POST"):
         numToShow = int(request.POST['prevNumToShow']) + 10
 
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date', '-amount')[:numToShow + 1]
+    transactions = dataService.getLastNTransactions(request.user, numToShow)
     
     hideShowMore = False
     if (transactions.count() < numToShow + 1):
@@ -186,7 +184,7 @@ def importTransactions(request):
 
 @login_required
 def transaction(request, id):
-    transaction = Transaction.objects.get(id=id)
+    transaction = dataService.getTransactionById(id)
     if (transaction.user != request.user):
         raise Http404
 
@@ -253,7 +251,7 @@ def transaction(request, id):
         return render(request, "tracker/fullPageForm.html", context)
 
 def deleteConfirm(request, id):
-    transaction = Transaction.objects.get(id=id)
+    transaction = dataService.getTransactionById(id)
     if (request.method == "POST"):
         transaction.delete()
         return redirect('/transactions')
@@ -278,32 +276,27 @@ def dashboard(request):
 
     # Data for monthly-results 
 
-    monthlyResultsData = getMonthlyResultsData()
+    monthlyResultsData = dataService.getMonthlyResultsData()
     print(monthlyResultsData)
 
     # end data for monthly-results
 
-    # Data for chart-section
-    transactions = Transaction.objects.filter(user=request.user, date__gte=startDate, date__lte=endDate).order_by('-date')
-
-    incomes = transactions.filter(amount__gt=0)
-    expenses = transactions.filter(amount__lt=0)
-
-    incomesByDate = incomes.values('date').order_by('date').annotate(total=Sum('amount'))
-    expensesByDate = expenses.values('date').order_by('date').annotate(total=Sum('amount'))
-    netByDate = transactions.values('date').order_by('date').annotate(total=Sum('amount'))
-    
+    # Data for chart-section    
+    netByDate = dataService.getNetByDate(request.user, startDate, endDate)
     netByDate = fillOutTransactions(netByDate, startDate, endDate)
     netByDate = convertToRunningTotal(netByDate)
+
+    incomesByDate = dataService.getIncomesByDate(request.user, startDate, endDate)
+    expensesByDate = dataService.getExpensesByDate(request.user, startDate, endDate)
 
     incomesByDate = fillOutTransactions(incomesByDate, startDate, endDate)
     expensesByDate = fillOutTransactions(expensesByDate, startDate, endDate)
 
-    categories = Category.objects.all()
+    categories = dataService.getCategories()
     categoryData = []
     for category in categories:
         if (str(category) != 'Income'):
-            totalForCategory = transactions.filter(category=category).aggregate(Sum('amount'))['amount__sum']
+            totalForCategory = dataService.getNetTransactionsForCategoryInDateRange(request.user, category, startDate, endDate)
             if (totalForCategory != None):
                 totalForCategory = abs(totalForCategory)
             else: 
