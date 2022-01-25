@@ -11,6 +11,7 @@ from django.db.models import Sum
 from calendar import monthrange
 from .utilities import fillOutTransactions, convertToRunningTotal
 from .services import dataService
+from .builders import expenseTrackerBuilder
 
 def index(request):
     if request.user.is_authenticated:
@@ -26,13 +27,7 @@ def internalServerError(request):
 
 @login_required
 def home(request):
-    sumOfTransactions = dataService.getSumOfTransactionsForMonth(request.user, datetime.datetime.now().month)
-    if (sumOfTransactions == None):
-        sumOfTransactions = 0
-    
-    context = {
-        'monthlyBalance': "{:,.2f}".format(sumOfTransactions)
-    }
+    context = expenseTrackerBuilder.buildHomeContext(request.user)
     return render(request, "tracker/home.html", context)
 
 @login_required
@@ -42,42 +37,16 @@ def chooseTransactionType(request):
 @login_required
 def logExpense(request):
     if (request.method == "POST"):
-        # create a form instance and populate it with data from the request:
         form = TransactionForm(request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            expense = Transaction(
-                date=form.cleaned_data['date'],
-                reason=form.cleaned_data['reason'],
-                vendor=form.cleaned_data['vendor'],
-                method=form.cleaned_data['method'],
-                category=form.cleaned_data['category'],
-                amount=form.cleaned_data['amount'] * -1,
-                user=request.user
-            )
-            expense.save()
-            return render(request, 'tracker/logExpenseSuccess.html', {'expense': expense})
+            context = expenseTrackerBuilder.buildLogExpenseSuccessContext(request.user, form)
+            return render(request, 'tracker/logExpenseSuccess.html', context)
         else:
-            context = {
-                'form': form,
-                'submit': True,
-                'cancelBack': True
-            }
-
+            context = expenseTrackerBuilder.buildLogExpenseFormErrorsContext(form)
             return render(request, "tracker/fullPageForm.html", context)
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
-        form = TransactionForm(initial={'prevUrl': prevUrl})
-        form.formId = 'expenseForm'
-        form.action = '/logExpense/'
-        form.title = 'Log Expense'
-
-        context = {
-            'form': form,
-            'submit': True,
-            'cancelBack': True
-        }
-        
+        context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required

@@ -51,3 +51,16 @@ def getNetTransactionsForCategoryInDateRange(user, category, startDate, endDate)
 
 def getCategories():
     return Category.objects.all()
+
+def createExpenseFromForm(form, user):
+    expense = Transaction(
+        date = form.cleaned_data['date'],
+        reason = form.cleaned_data['reason'],
+        vendor = form.cleaned_data['vendor'],
+        method = form.cleaned_data['method'],
+        category = form.cleaned_data['category'],
+        amount = form.cleaned_data['amount'] * -1,
+        user = user
+    )
+    expense.save()
+    return expense
