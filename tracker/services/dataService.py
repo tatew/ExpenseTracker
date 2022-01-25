@@ -54,13 +54,13 @@ def getCategories():
 
 def createExpenseFromForm(form, user):
     expense = Transaction(
-        date = form.cleaned_data['date'],
-        reason = form.cleaned_data['reason'],
-        vendor = form.cleaned_data['vendor'],
-        method = form.cleaned_data['method'],
-        category = form.cleaned_data['category'],
-        amount = form.cleaned_data['amount'] * -1,
-        user = user
+        date=form.cleaned_data['date'],
+        reason=form.cleaned_data['reason'],
+        vendor=form.cleaned_data['vendor'],
+        method=form.cleaned_data['method'],
+        category=form.cleaned_data['category'],
+        amount=form.cleaned_data['amount'] * -1,
+        user=user
     )
     expense.save()
     return expense
