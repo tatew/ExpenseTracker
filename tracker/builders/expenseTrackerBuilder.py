@@ -32,7 +32,7 @@ def buildLogExpenseFormErrorsContext(form):
     return context
 
 def buildLogExpenseFormContext(prevUrl):
-    form = TransactionForm(initial={'prevUrl': prevUrl})
+    form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
     form.formId = 'expenseForm'
     form.action = '/logExpense/'
     form.title = 'Log Expense'

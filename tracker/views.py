@@ -77,7 +77,7 @@ def logIncome(request):
             return render(request, "tracker/fullPageForm.html", context)
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
-        form = TransactionForm(initial={'prevUrl': prevUrl})
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.datetime.now()})
         form.formId = 'incomeForm'
         form.action = '/logIncome/'
         form.title = 'Log Income'
