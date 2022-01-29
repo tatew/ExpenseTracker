@@ -254,7 +254,7 @@ def dashboard(request):
     sumOfExpensesForMonth = expenseTrackerUtilities.sumTransactions(dataService.getExpensesForMonth(request.user, datetime.datetime.now().month))
     expnesesString = f"{sumOfExpensesForMonth:,}"
     expnesesString = f"${expnesesString:>12}"
-    netBalanceForMonth = sumOfIncomesForMonth - sumOfExpensesForMonth
+    netBalanceForMonth = sumOfIncomesForMonth + sumOfExpensesForMonth
     netBalanceString = f"{netBalanceForMonth:,}"
     netBalanceString = f"${netBalanceString:>12}"
     
