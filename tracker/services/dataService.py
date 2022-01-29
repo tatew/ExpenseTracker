@@ -17,6 +17,12 @@ def getMonthlyResultsData():
 def getTransactionsForMonth(user, month):
     return Transaction.objects.filter(date__month=month, user=user)
 
+def getIncomesForMonth(user, month):
+    return Transaction.objects.filter(date__month=month, user=user, amount__gt=0,)
+
+def getExpensesForMonth(user, month):
+    return Transaction.objects.filter(date__month=month, user=user, amount__lt=0,)
+
 def getTransactionsForDateRange(user, startDate, endDate):
     return Transaction.objects.filter(user=user, date__gte=startDate, date__lte=endDate).order_by('-date')
 

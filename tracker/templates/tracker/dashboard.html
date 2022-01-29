@@ -1,34 +1,59 @@
 {% extends "base.html" %}
+{% load filters %}
 {% load static %}
 {% block nav %}
 {% endblock %}
 
 {% block content %}
     <div class="content huge-content">
-        <h2>Dashboard</h2>
-        <div class="monthly-results">
-
-        </div>
-        <div class="charts-section">
-            <div class="filter-wrapper">
-                <div class="filters">
-                    <h3 id="filterTitle">Filter Charts</h3>
-                    {% include "tracker/form.html" %}
-                </div>
+        <div class="dashboard">
+            <h1>Dashboard</h1>
+            <div class="monthly-results">
+                <div class="monthly-results-tile">
+                    <h2>Current totals for this month</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="2">{{currentMonth}}, {{currentYear}}</th>
+                            </tr>
+                        </thead>
+                        
+                        <tr>
+                            <th>Income</th>
+                            <td class="accounting">{{sumOfImcomesForMonth|spacify}}</td>
+                        </tr>
+                        <tr>
+                            <th>Expenses</th>
+                            <td class="accounting">{{sumOfExpensesForMonth|spacify}}</td>
+                        </tr>
+                        <tr>
+                            <th>Net Balance</th>
+                            <td class="accounting">{{netBalanceForMonth|spacify}}</td>
+                        </tr>
+                    </table>   
+                </div>             
             </div>
-            <div class="charts">
-                <div class="chartTile">
-                    <canvas class="chartCanvas" id="runningTransactionTotal"></canvas>
+            <div class="charts-section">
+                <div class="filter-wrapper">
+                    <div class="filters">
+                        <h3 id="filterTitle">Filter Charts</h3>
+                        {% include "tracker/form.html" %}
+                    </div>
                 </div>
-                <div class="chartTile">
-                    <canvas class="chartCanvas" id="transactionsByDate"></canvas>
+                <div class="charts">
+                    <div class="chartTile">
+                        <canvas class="chartCanvas" id="runningTransactionTotal"></canvas>
+                    </div>
+                    <div class="chartTile">
+                        <canvas class="chartCanvas" id="transactionsByDate"></canvas>
+                    </div>
+                    <div class="chartTile">
+                        <canvas class="chartCanvas" id="expensesPerCategory"></canvas>
+                    </div>
                 </div>
-                <div class="chartTile">
-                    <canvas class="chartCanvas" id="expensesPerCategory"></canvas>
-                </div>
+                {{transactionData|json_script:"transactionData"}}
+                <script type="text/javascript" src="{% static 'tracker/dashboard.js' %}"></script>
             </div>
-            {{transactionData|json_script:"transactionData"}}
-            <script type="text/javascript" src="{% static 'tracker/dashboard.js' %}"></script>
         </div>
     </div>
 {% endblock %}

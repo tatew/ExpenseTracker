@@ -9,7 +9,7 @@ import csv
 import io
 from django.db.models import Sum
 from calendar import monthrange
-from .utilities import fillOutTransactions, convertToRunningTotal
+from .utilities import expenseTrackerUtilities
 from .services import dataService
 from .builders import expenseTrackerBuilder
 
@@ -248,18 +248,29 @@ def dashboard(request):
     monthlyResultsData = dataService.getMonthlyResultsData()
     print(monthlyResultsData)
 
+    sumOfIncomesForMonth = expenseTrackerUtilities.sumTransactions(dataService.getIncomesForMonth(request.user, datetime.datetime.now().month))
+    incomesString = f"{sumOfIncomesForMonth:,}"
+    incomesString = f"${incomesString:>12}"
+    sumOfExpensesForMonth = expenseTrackerUtilities.sumTransactions(dataService.getExpensesForMonth(request.user, datetime.datetime.now().month))
+    expnesesString = f"{sumOfExpensesForMonth:,}"
+    expnesesString = f"${expnesesString:>12}"
+    netBalanceForMonth = sumOfIncomesForMonth - sumOfExpensesForMonth
+    netBalanceString = f"{netBalanceForMonth:,}"
+    netBalanceString = f"${netBalanceString:>12}"
+    
+
     # end data for monthly-results
 
     # Data for chart-section    
     netByDate = dataService.getNetByDate(request.user, startDate, endDate)
-    netByDate = fillOutTransactions(netByDate, startDate, endDate)
-    netByDate = convertToRunningTotal(netByDate)
+    netByDate = expenseTrackerUtilities.fillOutTransactions(netByDate, startDate, endDate)
+    netByDate = expenseTrackerUtilities.convertToRunningTotal(netByDate)
 
     incomesByDate = dataService.getIncomesByDate(request.user, startDate, endDate)
     expensesByDate = dataService.getExpensesByDate(request.user, startDate, endDate)
 
-    incomesByDate = fillOutTransactions(incomesByDate, startDate, endDate)
-    expensesByDate = fillOutTransactions(expensesByDate, startDate, endDate)
+    incomesByDate = expenseTrackerUtilities.fillOutTransactions(incomesByDate, startDate, endDate)
+    expensesByDate = expenseTrackerUtilities.fillOutTransactions(expensesByDate, startDate, endDate)
 
     categories = dataService.getCategories()
     categoryData = []
@@ -288,5 +299,10 @@ def dashboard(request):
         },
         'form': form,
         'submit': True,
+        'sumOfExpensesForMonth': expnesesString,
+        'sumOfImcomesForMonth': incomesString,
+        'netBalanceForMonth': netBalanceString,
+        'currentMonth': datetime.datetime.strptime(str(datetime.datetime.now().month), "%m").strftime("%B"),
+        'currentYear': datetime.datetime.now().year,
     }
     return render(request, 'tracker/dashboard.html', context)

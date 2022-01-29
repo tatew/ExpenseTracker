@@ -1,5 +1,6 @@
 from ..models import Transaction
-from ..utilities import lookupCategory, lookupMethod
+from ..utilities import expenseTrackerUtilities
+from datetime import datetime
 
 def importTransactionsCsv(reader, request):
     reader.__next__()
@@ -21,11 +22,11 @@ def importTransactionsCsv(reader, request):
         else:
             try:
                 transaction = Transaction(
-                    date=datetime.datetime.strptime(row['date'].strip(), "%m/%d/%Y"),
+                    date=datetime.strptime(row['date'].strip(), "%m/%d/%Y"),
                     reason=row['reason'].strip(),
                     vendor=row['vendor'].strip(),
-                    method=lookupMethod(row['method'].strip()),
-                    category=lookupCategory(row['category'].strip()),
+                    method=expenseTrackerUtilities.lookupMethod(row['method'].strip()),
+                    category=expenseTrackerUtilities.lookupCategory(row['category'].strip()),
                     amount=float(row['amount'].strip()),
                     user=request.user
                 )

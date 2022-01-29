@@ -1,5 +1,6 @@
-from .models import Category, Method
+from ..models import Category, Method
 from datetime import datetime, timedelta, date
+from django.db.models import Sum
 
 def fillOutTransactions(transactions, startDate, endDate):
 
@@ -26,6 +27,9 @@ def convertToRunningTotal(transactions):
         prevTransaction = transaction['total']
 
     return transactions
+
+def sumTransactions(transactions):
+    return transactions.aggregate(Sum('amount'))['amount__sum']
 
 def lookupMethod(methodStr):
     try:

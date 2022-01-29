@@ -246,6 +246,14 @@ button.btn {
     white-space: nowrap;
 }
 
+.dashboard {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
 .charts-section {
     display: grid;
     grid-template-columns: 420px auto;
@@ -305,6 +313,40 @@ button.btn {
     position: relative;
     padding: 1rem;
     box-sizing: border-box;
+}
+
+.monthly-results {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.monthly-results th {
+    text-align: left;
+}
+
+.monthly-results thead th {
+    text-align: center;
+}
+
+.monthly-results-tile {
+    border: 0.1rem solid white;
+    border-radius: 0.4rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+@media screen and (max-width: 580px) {
+    .monthly-results-tile {
+        width: 100%;
+    }
 }
 
 /* Base */
