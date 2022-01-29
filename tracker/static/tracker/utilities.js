@@ -5,10 +5,10 @@ window.onMobile = function () {
 };
 
 window.onload = function () {
-    var title = document.getElementById("titleText");
+    const title = document.getElementById('titleText');
     if (onMobile()) {
-        title.innerHTML = '<i class="bi bi-piggy-bank-fill" id="headerLogo"></i>ST'
+        title.innerText = 'ST';
     } else {
-        title.innerHTML = '<i class="bi bi-piggy-bank-fill" id="headerLogo"></i>SimpleTracker'
+        title.innerText = 'SimpleTracker';
     }
 };

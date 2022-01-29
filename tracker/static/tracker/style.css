@@ -92,11 +92,6 @@ button.btn {
     background-color: white;
 }
 
-#headerLogo {
-    font-size: 3rem;
-    margin-right: 1rem;
-}
-
 .content {
     background-color: #0a3622;
     padding: 2rem;
@@ -317,6 +312,15 @@ button.btn {
 #siteTitle a {
     color: white;
     text-decoration: none;
+}
+
+#headerLogo {
+    margin-right: 0.3rem;
+}
+
+#titleText {
+    display: inline;
+    margin-bottom: 1rem;
 }
 
 /* Index */
