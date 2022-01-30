@@ -2,9 +2,10 @@ from ..models import Transaction, Category, Method
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.db.models import Sum
+from ..utilities import expenseTrackerUtilities
 
-def getMonthlyResultsData():
-    oldestDate = Transaction.objects.values('date').order_by('date').first()['date']
+def getMonthsFromFirstMonthWithData(user):
+    oldestDate = Transaction.objects.filter(user=user).values('date').order_by('date').first()['date']
     months = []
     iteratorDate = datetime(oldestDate.year, oldestDate.month, 1)
     currentDate = datetime(datetime.now().year, datetime.now().month, 1)
@@ -17,11 +18,11 @@ def getMonthlyResultsData():
 def getTransactionsForMonth(user, month):
     return Transaction.objects.filter(date__month=month, user=user)
 
-def getIncomesForMonth(user, month):
-    return Transaction.objects.filter(date__month=month, user=user, amount__gt=0,)
+def getIncomesForMonth(user, year, month):
+    return Transaction.objects.filter(date__year=year, date__month=month, user=user, amount__gt=0,)
 
-def getExpensesForMonth(user, month):
-    return Transaction.objects.filter(date__month=month, user=user, amount__lt=0,)
+def getExpensesForMonth(user, year, month):
+    return Transaction.objects.filter(date__year=year, date__month=month, user=user, amount__lt=0,)
 
 def getTransactionsForDateRange(user, startDate, endDate):
     return Transaction.objects.filter(user=user, date__gte=startDate, date__lte=endDate).order_by('-date')
@@ -70,3 +71,22 @@ def createExpenseFromForm(form, user):
     )
     expense.save()
     return expense
+
+def getTotalsForMonth(user, year, month):
+    sumOfIncomesForMonth = expenseTrackerUtilities.sumTransactions(getIncomesForMonth(user, year, month))
+    incomesString = f"{sumOfIncomesForMonth:,}"
+    incomesString = f"${incomesString:>12}"
+    sumOfExpensesForMonth = expenseTrackerUtilities.sumTransactions(getExpensesForMonth(user, year, month))
+    expnesesString = f"{sumOfExpensesForMonth:,}"
+    expnesesString = f"${expnesesString:>12}"
+    netBalanceForMonth = sumOfIncomesForMonth + sumOfExpensesForMonth
+    netBalanceString = f"{netBalanceForMonth:,}"
+    netBalanceString = f"${netBalanceString:>12}"
+
+    totalsForMonth = {
+        'sumOfExpensesForMonth': expnesesString,
+        'sumOfImcomesForMonth': incomesString,
+        'netBalanceForMonth': netBalanceString,
+    }
+
+    return totalsForMonth
