@@ -15,8 +15,8 @@ def getMonthsFromFirstMonthWithData(user):
 
     return months
 
-def getTransactionsForMonth(user, month):
-    return Transaction.objects.filter(date__month=month, user=user)
+def getTransactionsForMonth(user, year, month):
+    return Transaction.objects.filter(date__year=year, date__month=month, user=user)
 
 def getIncomesForMonth(user, year, month):
     return Transaction.objects.filter(date__year=year, date__month=month, user=user, amount__gt=0,)
@@ -27,11 +27,8 @@ def getExpensesForMonth(user, year, month):
 def getTransactionsForDateRange(user, startDate, endDate):
     return Transaction.objects.filter(user=user, date__gte=startDate, date__lte=endDate).order_by('-date')
 
-def getSumOfTransactionsForMonth(user, month):
-    return getTransactionsForMonth(user, month).aggregate(Sum('amount'))['amount__sum']
-
 def getLastNTransactions(user, numToTake):
-    return Transaction.objects.filter(user=user).order_by('-date', '-amount')[:numToTake + 1]
+    return Transaction.objects.filter(user=user).order_by('-date', '-amount')[:numToTake]
 
 def getTransactionById(id):
     return Transaction.objects.get(id=id)

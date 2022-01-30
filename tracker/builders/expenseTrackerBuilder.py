@@ -7,7 +7,7 @@ from ..utilities import expenseTrackerUtilities
 # Always pass user or other things from request as first argument
 
 def buildHomeContext(user):
-    transactionsForMonth = dataService.getTransactionsForMonth(user, datetime.now().month)
+    transactionsForMonth = dataService.getTransactionsForMonth(user, datetime.now().year, datetime.now().month)
     sumOfTransactions = expenseTrackerUtilities.sumTransactions(transactionsForMonth)
     if (sumOfTransactions == None):
         sumOfTransactions = 0

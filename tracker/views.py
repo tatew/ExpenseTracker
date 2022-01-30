@@ -96,10 +96,10 @@ def listTransactions(request):
     if (request.method == "POST"):
         numToShow = int(request.POST['prevNumToShow']) + 10
 
-    transactions = dataService.getLastNTransactions(request.user, numToShow)
+    transactions = dataService.getLastNTransactions(request.user, numToShow + 1)
     
     hideShowMore = False
-    if (transactions.count() < numToShow + 1):
+    if (transactions.count() < numToShow + 2):
         hideShowMore = True
 
     transactions = transactions[:numToShow]
