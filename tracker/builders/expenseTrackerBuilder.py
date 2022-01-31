@@ -72,8 +72,8 @@ def buildChartData(user, startDate, endDate):
     netByDate = expenseTrackerUtilities.fillOutTransactions(netByDate, startDate, endDate)
     netByDate = expenseTrackerUtilities.convertToRunningTotal(netByDate)
 
-    incomesByDate = dataService.getIncomesByDate(user, startDate, endDate)
-    expensesByDate = dataService.getExpensesByDate(user, startDate, endDate)
+    incomesByDate = dataService.getIncomeTotalsByDate(user, startDate, endDate)
+    expensesByDate = dataService.getExpenseTotalsByDate(user, startDate, endDate)
 
     incomesByDate = expenseTrackerUtilities.fillOutTransactions(incomesByDate, startDate, endDate)
     expensesByDate = expenseTrackerUtilities.fillOutTransactions(expensesByDate, startDate, endDate)

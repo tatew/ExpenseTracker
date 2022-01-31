@@ -33,11 +33,11 @@ def getLastNTransactions(user, numToTake):
 def getTransactionById(id):
     return Transaction.objects.get(id=id)
 
-def getIncomesByDate(user, startDate, endDate):
+def getIncomeTotalsByDate(user, startDate, endDate):
     incomes = Transaction.objects.filter(user=user, amount__gt=0, date__gte=startDate, date__lte=endDate).order_by('-date')
     return incomes.values('date').order_by('date').annotate(total=Sum('amount'))
 
-def getExpensesByDate(user, startDate, endDate):
+def getExpenseTotalsByDate(user, startDate, endDate):
     expenses = Transaction.objects.filter(user=user, amount__lt=0, date__gte=startDate, date__lte=endDate).order_by('-date')
     return expenses.values('date').order_by('date').annotate(total=Sum('amount'))
 

@@ -11,6 +11,7 @@ class TestDataService(TestCase):
 
     def setUp(self):
         self.categ1 = Category.objects.create(name="testCategory1")
+        self.categ2 = Category.objects.create(name="testCategory2")
         self.method1 = Method.objects.create(name="testMethod1")
         self.user1 = User.objects.create_user(username='user1', password='12345')
         self.user2 = User.objects.create_user(username='user2', password='12345')
@@ -354,3 +355,300 @@ class TestDataService(TestCase):
         result = dataService.getTransactionById(transaction.id)
         #assert
         self.assertEqual(result, transaction)
+
+    def test_getIncomeTotalsByDate(self):
+        #arrange
+        Transaction.objects.create(
+            date=datetime(2021, 7, 1),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=1,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 2),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=2,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=41,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=42,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 5),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=5,
+            user=self.user1
+        )
+        #act
+        startDate = datetime(2021, 7, 2)
+        endDate = datetime(2021, 7, 4)
+        result = dataService.getIncomeTotalsByDate(self.user1, startDate, endDate)
+        #assert
+        self.assertEqual(len(result), 3)
+        self.assertAlmostEqual(result[0]['total'], Decimal(2))
+        self.assertAlmostEqual(result[1]['total'], Decimal(3))
+        self.assertAlmostEqual(result[2]['total'], Decimal(83))
+
+    def test_getExpenseTotalsByDate(self):
+        #arrange
+        Transaction.objects.create(
+            date=datetime(2021, 7, 1),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-1,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 2),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-2,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-41,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-42,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 5),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-5,
+            user=self.user1
+        )
+        #act
+        startDate = datetime(2021, 7, 2)
+        endDate = datetime(2021, 7, 4)
+        result = dataService.getExpenseTotalsByDate(self.user1, startDate, endDate)
+        #assert
+        self.assertEqual(len(result), 3)
+        self.assertAlmostEqual(result[0]['total'], Decimal(-2))
+        self.assertAlmostEqual(result[1]['total'], Decimal(-3))
+        self.assertAlmostEqual(result[2]['total'], Decimal(-83))
+
+    def test_getNetByDate(self):
+        #arrange
+        Transaction.objects.create(
+            date=datetime(2021, 7, 1),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-1,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 2),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-2,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-41,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=42,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 5),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-5,
+            user=self.user1
+        )
+        #act
+        startDate = datetime(2021, 7, 2)
+        endDate = datetime(2021, 7, 4)
+        result = dataService.getNetByDate(self.user1, startDate, endDate)
+        #assert
+        self.assertEqual(len(result), 3)
+        self.assertAlmostEqual(result[0]['total'], Decimal(-2))
+        self.assertAlmostEqual(result[1]['total'], Decimal(0))
+        self.assertAlmostEqual(result[2]['total'], Decimal(1))
+
+    def test_getTransactionsForCategoryInDateRange(self):
+        #arrange
+        Transaction.objects.create(
+            date=datetime(2021, 7, 1),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-1,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 2),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-2,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='differentCateg',
+            category=self.categ2,
+            method=self.method1,
+            amount=3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-41,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=42,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 5),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-5,
+            user=self.user1
+        )
+        #act
+        startDate = datetime(2021, 7, 2)
+        endDate = datetime(2021, 7, 4)
+        result = dataService.getTransactionsForCategoryInDateRange(self.user1, self.categ1, startDate, endDate)
+        #assert
+        self.assertEqual(len(result), 4)
