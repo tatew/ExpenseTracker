@@ -103,6 +103,25 @@ def buildChartData(user, startDate, endDate):
 
 def buildMonthlyData(user):
 
-    monthlyData = dataService.getTotalsForMonth(user, datetime.now().year, datetime.now().month)
+    monthlyData = getTotalsForMonth(user, datetime.now().year, datetime.now().month)
 
     return monthlyData
+
+def getTotalsForMonth(user, year, month):
+    sumOfIncomesForMonth = expenseTrackerUtilities.sumTransactions(dataService.getIncomesForMonth(user, year, month))
+    incomesString = f"{sumOfIncomesForMonth:,}"
+    incomesString = f"${incomesString:>12}"
+    sumOfExpensesForMonth = expenseTrackerUtilities.sumTransactions(dataService.getExpensesForMonth(user, year, month))
+    expnesesString = f"{sumOfExpensesForMonth:,}"
+    expnesesString = f"${expnesesString:>12}"
+    netBalanceForMonth = sumOfIncomesForMonth + sumOfExpensesForMonth
+    netBalanceString = f"{netBalanceForMonth:,}"
+    netBalanceString = f"${netBalanceString:>12}"
+
+    totalsForMonth = {
+        'sumOfExpensesForMonth': expnesesString,
+        'sumOfImcomesForMonth': incomesString,
+        'netBalanceForMonth': netBalanceString,
+    }
+
+    return totalsForMonth

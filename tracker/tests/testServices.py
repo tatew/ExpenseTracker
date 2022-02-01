@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from ..services import dataService
 from freezegun import freeze_time
 from decimal import Decimal
+from ..forms import TransactionForm
 
 class TestDataService(TestCase):
 
@@ -652,3 +653,105 @@ class TestDataService(TestCase):
         result = dataService.getTransactionsForCategoryInDateRange(self.user1, self.categ1, startDate, endDate)
         #assert
         self.assertEqual(len(result), 4)
+
+    def test_getNetTransactionsForCategoryInDateRange(self):
+        #arrange
+        Transaction.objects.create(
+            date=datetime(2021, 7, 1),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-1,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 2),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-2,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='differentCateg',
+            category=self.categ2,
+            method=self.method1,
+            amount=3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-41,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=42,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 5),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-5,
+            user=self.user1
+        )
+        #act
+        startDate = datetime(2021, 7, 2)
+        endDate = datetime(2021, 7, 4)
+        result = dataService.getNetTransactionsForCategoryInDateRange(self.user1, self.categ1, startDate, endDate)
+        #assert
+        self.assertAlmostEqual(result, Decimal(-4))
+
+    def test_getCategories(self):
+        #arrange
+
+        #act
+        result = dataService.getCategories()
+
+        #assert
+        self.assertEqual(len(result), 2)
+
+    def test_createExpenseFromForm(self):
+        #arrange
+        form = TransactionForm(data={
+            'date': "2022-01-28",
+            'vendor': 'test',
+            'reason': 'test',
+            'category': self.categ1.id,
+            'method': self.method1.id,
+            'amount': 10.44,
+            'user': self.user1
+        })
+
+        form.is_valid()
+
+        #act
+        result = dataService.createExpenseFromForm(form, self.user1)
+
+        #assert
+        self.assertEqual(len(Transaction.objects.all()), 1)
+        self.assertAlmostEqual(Transaction.objects.all()[0].amount, Decimal(-10.44))

@@ -69,21 +69,3 @@ def createExpenseFromForm(form, user):
     expense.save()
     return expense
 
-def getTotalsForMonth(user, year, month):
-    sumOfIncomesForMonth = expenseTrackerUtilities.sumTransactions(getIncomesForMonth(user, year, month))
-    incomesString = f"{sumOfIncomesForMonth:,}"
-    incomesString = f"${incomesString:>12}"
-    sumOfExpensesForMonth = expenseTrackerUtilities.sumTransactions(getExpensesForMonth(user, year, month))
-    expnesesString = f"{sumOfExpensesForMonth:,}"
-    expnesesString = f"${expnesesString:>12}"
-    netBalanceForMonth = sumOfIncomesForMonth + sumOfExpensesForMonth
-    netBalanceString = f"{netBalanceForMonth:,}"
-    netBalanceString = f"${netBalanceString:>12}"
-
-    totalsForMonth = {
-        'sumOfExpensesForMonth': expnesesString,
-        'sumOfImcomesForMonth': incomesString,
-        'netBalanceForMonth': netBalanceString,
-    }
-
-    return totalsForMonth
