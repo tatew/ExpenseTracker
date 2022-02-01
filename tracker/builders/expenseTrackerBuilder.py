@@ -61,6 +61,9 @@ def buildDashboardContext(user, startDate, endDate):
         'submit': True,
         'currentMonth': datetime.strptime(str(datetime.now().month), "%m").strftime("%B"),
         'currentYear': datetime.now().year,
+        'extraButtons': [
+            '<button onclick="testPost()" class="btn btn-primary">Show data for All Time<i class="bi bi-calendar-check icon-right"></i></button>'
+        ]
     }
 
     return context

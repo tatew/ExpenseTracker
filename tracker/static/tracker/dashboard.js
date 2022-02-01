@@ -1,3 +1,10 @@
+function testPost() {
+    alert("test");
+}
+
+
+
+// ChartJS 
 const chartData = JSON.parse(document.getElementById('chartData').textContent);
 console.log(chartData);
 

@@ -114,5 +114,8 @@
         <button id="edit" onclick="clickEdit()" class="btn btn-primary">Edit<i class="bi bi-pencil-square icon-right"></i></button>
         <a id="delete" href="/transactions/{{ id }}/delete" class="btn btn-primary">Delete<i class="bi bi-x-lg icon-right"></i></a>
         <button id="submit" form="{{ form.formId }}" type="submit" class="btn btn-primary">Submit<i class="bi bi-check2-square icon-right"></i></button>
+        {% for button in extraButtons %}
+            {{ button|safe }}
+        {% endfor %}
     </div>
 </div>
