@@ -755,3 +755,156 @@ class TestDataService(TestCase):
         #assert
         self.assertEqual(len(Transaction.objects.all()), 1)
         self.assertAlmostEqual(Transaction.objects.all()[0].amount, Decimal(-10.44))
+
+    def test_getOldestTransaction(self):
+        #arrange
+        Transaction.objects.create(
+            date=datetime(2021, 7, 1),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-1,
+            user=self.user2
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 2),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-2,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='differentCateg',
+            category=self.categ2,
+            method=self.method1,
+            amount=3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-41,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=42,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 5),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-5,
+            user=self.user1
+        )
+        #act
+        result = dataService.getOldestTransaction(self.user1)
+        #assert
+        self.assertEqual(result.date.year, 2021)
+        self.assertEqual(result.date.month, 7)
+        self.assertEqual(result.date.day, 2)
+
+    def test_getNewestTransaction(self):
+        #arrange
+        Transaction.objects.create(
+            date=datetime(2021, 7, 1),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-1,
+            user=self.user2
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 2),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-2,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 3),
+            vendor='test',
+            reason='differentCateg',
+            category=self.categ2,
+            method=self.method1,
+            amount=3,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-41,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 4),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=42,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 5),
+            vendor='test',
+            reason='expense',
+            category=self.categ1,
+            method=self.method1,
+            amount=-5,
+            user=self.user1
+        )
+        Transaction.objects.create(
+            date=datetime(2021, 7, 6),
+            vendor='test',
+            reason='income',
+            category=self.categ1,
+            method=self.method1,
+            amount=42,
+            user=self.user2
+        )
+        #act
+        result = dataService.getNewestTransaction(self.user1)
+        #assert
+        self.assertEqual(result.date.year, 2021)
+        self.assertEqual(result.date.month, 7)
+        self.assertEqual(result.date.day, 5)

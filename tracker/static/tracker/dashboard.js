@@ -1,5 +1,7 @@
-function testPost() {
-    alert("test");
+function clickedAllData() {
+    const allTimeDataInput = document.getElementById("id_allData");
+    allTimeDataInput.setAttribute("value", "true");
+    document.getElementById("chartFilterForm").submit();
 }
 
 

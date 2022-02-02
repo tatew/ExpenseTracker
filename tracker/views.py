@@ -241,8 +241,13 @@ def dashboard(request):
     if (request.method == 'POST'):
         form = ChartFilterForm(request.POST)
         if (form.is_valid()):
-            startDate = form.cleaned_data['startDate']
-            endDate = form.cleaned_data['endDate']
+            if (bool(form.cleaned_data['allData'])):
+                startDate = dataService.getOldestTransaction(request.user).date
+                endDate = dataService.getNewestTransaction(request.user).date
+                print(startDate, endDate)
+            else:
+                startDate = form.cleaned_data['startDate']
+                endDate = form.cleaned_data['endDate']
 
     context = expenseTrackerBuilder.buildDashboardContext(request.user, startDate, endDate)
     

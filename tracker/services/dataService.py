@@ -69,3 +69,8 @@ def createExpenseFromForm(form, user):
     expense.save()
     return expense
 
+def getOldestTransaction(user):
+    return Transaction.objects.filter(user=user).all().order_by('date')[0]
+
+def getNewestTransaction(user):
+    return Transaction.objects.filter(user=user).all().order_by('-date')[0]

@@ -29,7 +29,7 @@ def convertToRunningTotal(transactions):
     return transactions
 
 def sumTransactions(transactions):
-    if len(transactions) == 0:
+    if (len(transactions) == 0):
         return 0
     return transactions.aggregate(Sum('amount'))['amount__sum']
 
