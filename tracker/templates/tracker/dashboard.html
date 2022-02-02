@@ -20,15 +20,15 @@
                         
                         <tr>
                             <th>Income</th>
-                            <td class="accounting">{{sumOfImcomesForMonth|spacify}}</td>
+                            <td class="accounting">{{monthlyData.sumOfImcomesForMonth|spacify}}</td>
                         </tr>
                         <tr>
                             <th>Expenses</th>
-                            <td class="accounting">{{sumOfExpensesForMonth|spacify}}</td>
+                            <td class="accounting">{{monthlyData.sumOfExpensesForMonth|spacify}}</td>
                         </tr>
                         <tr>
                             <th>Net Balance</th>
-                            <td class="accounting">{{netBalanceForMonth|spacify}}</td>
+                            <td class="accounting">{{monthlyData.netBalanceForMonth|spacify}}</td>
                         </tr>
                     </table>   
                 </div>             
@@ -51,7 +51,7 @@
                         <canvas class="chartCanvas" id="expensesPerCategory"></canvas>
                     </div>
                 </div>
-                {{transactionData|json_script:"transactionData"}}
+                {{chartData|json_script:"chartData"}}
                 <script type="text/javascript" src="{% static 'tracker/dashboard.js' %}"></script>
             </div>
         </div>

@@ -2,9 +2,10 @@ from ..models import Transaction, Category, Method
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.db.models import Sum
+from ..utilities import expenseTrackerUtilities
 
-def getMonthlyResultsData():
-    oldestDate = Transaction.objects.values('date').order_by('date').first()['date']
+def getMonthsFromFirstMonthWithData(user):
+    oldestDate = Transaction.objects.filter(user=user).values('date').order_by('date').first()['date']
     months = []
     iteratorDate = datetime(oldestDate.year, oldestDate.month, 1)
     currentDate = datetime(datetime.now().year, datetime.now().month, 1)
@@ -14,32 +15,29 @@ def getMonthlyResultsData():
 
     return months
 
-def getTransactionsForMonth(user, month):
-    return Transaction.objects.filter(date__month=month, user=user)
+def getTransactionsForMonth(user, year, month):
+    return Transaction.objects.filter(date__year=year, date__month=month, user=user)
 
-def getIncomesForMonth(user, month):
-    return Transaction.objects.filter(date__month=month, user=user, amount__gt=0,)
+def getIncomesForMonth(user, year, month):
+    return Transaction.objects.filter(date__year=year, date__month=month, user=user, amount__gt=0,)
 
-def getExpensesForMonth(user, month):
-    return Transaction.objects.filter(date__month=month, user=user, amount__lt=0,)
+def getExpensesForMonth(user, year, month):
+    return Transaction.objects.filter(date__year=year, date__month=month, user=user, amount__lt=0,)
 
 def getTransactionsForDateRange(user, startDate, endDate):
     return Transaction.objects.filter(user=user, date__gte=startDate, date__lte=endDate).order_by('-date')
 
-def getSumOfTransactionsForMonth(user, month):
-    return getTransactionsForMonth(user, month).aggregate(Sum('amount'))['amount__sum']
-
 def getLastNTransactions(user, numToTake):
-    return Transaction.objects.filter(user=user).order_by('-date', '-amount')[:numToTake + 1]
+    return Transaction.objects.filter(user=user).order_by('-date', '-amount')[:numToTake]
 
 def getTransactionById(id):
     return Transaction.objects.get(id=id)
 
-def getIncomesByDate(user, startDate, endDate):
+def getIncomeTotalsByDate(user, startDate, endDate):
     incomes = Transaction.objects.filter(user=user, amount__gt=0, date__gte=startDate, date__lte=endDate).order_by('-date')
     return incomes.values('date').order_by('date').annotate(total=Sum('amount'))
 
-def getExpensesByDate(user, startDate, endDate):
+def getExpenseTotalsByDate(user, startDate, endDate):
     expenses = Transaction.objects.filter(user=user, amount__lt=0, date__gte=startDate, date__lte=endDate).order_by('-date')
     return expenses.values('date').order_by('date').annotate(total=Sum('amount'))
 
@@ -70,3 +68,9 @@ def createExpenseFromForm(form, user):
     )
     expense.save()
     return expense
+
+def getOldestTransaction(user):
+    return Transaction.objects.filter(user=user).all().order_by('date')[0]
+
+def getNewestTransaction(user):
+    return Transaction.objects.filter(user=user).all().order_by('-date')[0]

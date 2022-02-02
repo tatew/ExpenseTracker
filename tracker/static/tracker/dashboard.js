@@ -1,5 +1,14 @@
-const transactionData = JSON.parse(document.getElementById('transactionData').textContent);
-console.log(transactionData);
+function clickedAllData() {
+    const allTimeDataInput = document.getElementById("id_allData");
+    allTimeDataInput.setAttribute("value", "true");
+    document.getElementById("chartFilterForm").submit();
+}
+
+
+
+// ChartJS 
+const chartData = JSON.parse(document.getElementById('chartData').textContent);
+console.log(chartData);
 
 const blue = '#0d6efd';
 const indigo = '#6610f2';
@@ -18,8 +27,8 @@ const labelColor = '#6c757d';
 Chart.defaults.font.family = "'JetBrains Mono', monospace";
 Chart.defaults.color = labelColor;
 
-const netByDateDates = transactionData.netByDate.map(t => t.date);
-const netByDateAmounts = transactionData.netByDate.map(t => parseFloat(t.total));
+const netByDateDates = chartData.netByDate.map(t => t.date);
+const netByDateAmounts = chartData.netByDate.map(t => parseFloat(t.total));
 
 const netByDateData = {
 labels: netByDateDates,
@@ -67,9 +76,9 @@ const runningTransactionTotal = new Chart(
     runningTransactionTotalConfig
 );
 
-const transactionsByDateDates = transactionData.incomesByDate.map(t => t.date)
-const incomes = transactionData.incomesByDate.map(t => parseFloat(t.total))
-const expenses = transactionData.expensesByDate.map(t => parseFloat(t.total))
+const transactionsByDateDates = chartData.incomesByDate.map(t => t.date)
+const incomes = chartData.incomesByDate.map(t => parseFloat(t.total))
+const expenses = chartData.expensesByDate.map(t => parseFloat(t.total))
 
 const transactionsByDateData = {
     labels: transactionsByDateDates,
@@ -125,8 +134,8 @@ const transactionsByDate = new Chart(
     transactionsByDateConfig
 );
 
-const categories = transactionData.categoryData.map(c => c.name);
-const amountPerCategory = transactionData.categoryData.map(c => parseInt(c.total));
+const categories = chartData.categoryData.map(c => c.name);
+const amountPerCategory = chartData.categoryData.map(c => parseInt(c.total));
 
 const expensesPerCategoryData = {
     labels: categories,

@@ -96,10 +96,10 @@ def listTransactions(request):
     if (request.method == "POST"):
         numToShow = int(request.POST['prevNumToShow']) + 10
 
-    transactions = dataService.getLastNTransactions(request.user, numToShow)
+    transactions = dataService.getLastNTransactions(request.user, numToShow + 1)
     
     hideShowMore = False
-    if (transactions.count() < numToShow + 1):
+    if (transactions.count() < numToShow + 2):
         hideShowMore = True
 
     transactions = transactions[:numToShow]
@@ -230,6 +230,7 @@ def deleteConfirm(request, id):
         }
         return render(request, 'tracker/deleteConfirm.html', context)
 
+@login_required
 def dashboard(request):
     currentYear = datetime.datetime.now().year
     currentMonth = datetime.datetime.now().month
@@ -240,69 +241,14 @@ def dashboard(request):
     if (request.method == 'POST'):
         form = ChartFilterForm(request.POST)
         if (form.is_valid()):
-            startDate = form.cleaned_data['startDate']
-            endDate = form.cleaned_data['endDate']
+            if (bool(form.cleaned_data['allData'])):
+                startDate = dataService.getOldestTransaction(request.user).date
+                endDate = dataService.getNewestTransaction(request.user).date
+                print(startDate, endDate)
+            else:
+                startDate = form.cleaned_data['startDate']
+                endDate = form.cleaned_data['endDate']
 
-    # Data for monthly-results 
-
-    monthlyResultsData = dataService.getMonthlyResultsData()
-    print(monthlyResultsData)
-
-    sumOfIncomesForMonth = expenseTrackerUtilities.sumTransactions(dataService.getIncomesForMonth(request.user, datetime.datetime.now().month))
-    incomesString = f"{sumOfIncomesForMonth:,}"
-    incomesString = f"${incomesString:>12}"
-    sumOfExpensesForMonth = expenseTrackerUtilities.sumTransactions(dataService.getExpensesForMonth(request.user, datetime.datetime.now().month))
-    expnesesString = f"{sumOfExpensesForMonth:,}"
-    expnesesString = f"${expnesesString:>12}"
-    netBalanceForMonth = sumOfIncomesForMonth + sumOfExpensesForMonth
-    netBalanceString = f"{netBalanceForMonth:,}"
-    netBalanceString = f"${netBalanceString:>12}"
+    context = expenseTrackerBuilder.buildDashboardContext(request.user, startDate, endDate)
     
-
-    # end data for monthly-results
-
-    # Data for chart-section    
-    netByDate = dataService.getNetByDate(request.user, startDate, endDate)
-    netByDate = expenseTrackerUtilities.fillOutTransactions(netByDate, startDate, endDate)
-    netByDate = expenseTrackerUtilities.convertToRunningTotal(netByDate)
-
-    incomesByDate = dataService.getIncomesByDate(request.user, startDate, endDate)
-    expensesByDate = dataService.getExpensesByDate(request.user, startDate, endDate)
-
-    incomesByDate = expenseTrackerUtilities.fillOutTransactions(incomesByDate, startDate, endDate)
-    expensesByDate = expenseTrackerUtilities.fillOutTransactions(expensesByDate, startDate, endDate)
-
-    categories = dataService.getCategories()
-    categoryData = []
-    for category in categories:
-        if (str(category) != 'Income'):
-            totalForCategory = dataService.getNetTransactionsForCategoryInDateRange(request.user, category, startDate, endDate)
-            if (totalForCategory != None):
-                totalForCategory = abs(totalForCategory)
-            else: 
-                totalForCategory = 0
-            categoryData.append({
-                'name': str(category),
-                'total': totalForCategory
-            })
-
-    #end data for charts-section
-
-    form = ChartFilterForm(initial={'startDate': startDate, 'endDate': endDate})
-
-    context = {
-        'transactionData': {
-            'incomesByDate': list(incomesByDate),
-            'expensesByDate': list(expensesByDate),
-            'netByDate': list(netByDate),
-            'categoryData': categoryData
-        },
-        'form': form,
-        'submit': True,
-        'sumOfExpensesForMonth': expnesesString,
-        'sumOfImcomesForMonth': incomesString,
-        'netBalanceForMonth': netBalanceString,
-        'currentMonth': datetime.datetime.strptime(str(datetime.datetime.now().month), "%m").strftime("%B"),
-        'currentYear': datetime.datetime.now().year,
-    }
     return render(request, 'tracker/dashboard.html', context)
