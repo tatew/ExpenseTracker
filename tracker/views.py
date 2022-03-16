@@ -99,7 +99,7 @@ def listTransactions(request):
     transactions = dataService.getLastNTransactions(request.user, numToShow + 1)
     
     hideShowMore = False
-    if (transactions.count() < numToShow + 2):
+    if (transactions.count() < numToShow + 1):
         hideShowMore = True
 
     transactions = transactions[:numToShow]
