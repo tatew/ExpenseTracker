@@ -40,3 +40,14 @@ class Transaction(models.Model):
             fromOrAt = "from"
         date = datetime.date.strftime(self.date, "%m/%d/%Y")
         return f"{typeOfTransaction} of ${abs(self.amount)} on {date} {fromOrAt} {self.vendor}"
+
+class TransactionPreset(models.Model):
+    name = models.CharField(max_length=100)
+    isExpense = models.BooleanField()
+    date = models.DateField(null=True)
+    vendor = models.CharField(max_length=200, null=True)
+    reason = models.CharField(max_length=500, null=True)
+    category = models.ForeignKey(Category, on_delete=PROTECT, null=True)
+    method = models.ForeignKey(Method, on_delete=PROTECT, null=True)
+    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    user = models.ForeignKey(auth.get_user_model(), on_delete=PROTECT)

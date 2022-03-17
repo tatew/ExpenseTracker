@@ -1,4 +1,3 @@
-from calendar import month
 from ..services import dataService
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -171,3 +170,12 @@ def getTotalsForMonth(user, year, month):
     }
 
     return totalsForMonth
+
+def buildPresetTransactionsContext(user):
+    presets = dataService.getTransactionPresetsForUser(user);
+
+    context = {
+        'presets': presets
+    }
+
+    return context

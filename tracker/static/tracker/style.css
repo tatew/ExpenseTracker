@@ -89,6 +89,8 @@ tr.clickable:hover {
     background-color: white;
 }
 
+/* content */
+
 .content {
     background-color: #0a3622;
     padding: 2rem;
@@ -140,6 +142,8 @@ tr.clickable:hover {
     text-align: center;
 }
 
+/* form */
+
 .form-wrapper {
     display: flex;
     flex-direction: column;
@@ -190,6 +194,8 @@ tr.clickable:hover {
     }
 }
 
+/* cards */
+
 .cards {
     display: flex;
     flex-wrap: wrap;
@@ -199,6 +205,10 @@ tr.clickable:hover {
 
 .big-cards {
     gap: 2rem;
+}
+
+.medium-cards {
+    gap: 1rem
 }
 
 .small-cards {
@@ -219,14 +229,55 @@ tr.clickable:hover {
     font-size: 1.5rem;
 }
 
-.small-card {
+.medium-card {
     width: 5rem;
     height: 5rem;
     font-size: 1rem;
 }
 
+.small-card {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+}
+
 .card i {
     font-size: 200%;
+}
+
+/* rows */
+
+.rows {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 1fr 1fr;
+    padding: 1rem;
+}
+
+.row .row-icon {
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+    font-size: 200%;
+    align-self: center;
+}
+
+.row .row-icon-subtitle {
+    grid-column: 1 / span 1;
+    grid-row: 2 / span 1;
+    align-self: center;
+}
+
+.row .row-content {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 2;
+    align-self: center;
 }
 
 .table {

@@ -1,6 +1,6 @@
 from multiprocessing.dummy import freeze_support
 from django.test import TestCase
-from ..models import Transaction, Category, Method
+from ..models import Transaction, Category, Method, TransactionPreset
 from datetime import datetime
 from django.contrib.auth.models import User
 from ..services import dataService
@@ -908,3 +908,23 @@ class TestDataService(TestCase):
         self.assertEqual(result.date.year, 2021)
         self.assertEqual(result.date.month, 7)
         self.assertEqual(result.date.day, 5)
+
+    def testGetTransactionPresetsForUser(self):
+        #arrange
+        TransactionPreset.objects.create(
+            name="atest",
+            user=self.user1
+        )
+        TransactionPreset.objects.create(
+            name="btest",
+            user=self.user1
+        )
+        TransactionPreset.objects.create(
+            name="test",
+            user=self.user2
+        )
+        #act
+        result = dataService.getTransactionPresetsForUser(self.user1)
+        #assert
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].name, "atest")

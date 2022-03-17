@@ -1,4 +1,4 @@
-from ..models import Transaction, Category, Method
+from ..models import Transaction, Category, Method, TransactionPreset
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.db.models import Sum
@@ -74,3 +74,6 @@ def getOldestTransaction(user):
 
 def getNewestTransaction(user):
     return Transaction.objects.filter(user=user).all().order_by('-date')[0]
+
+def getTransactionPresetsForUser(user):
+    return TransactionPreset.objects.filter(user=user).order_by('name')

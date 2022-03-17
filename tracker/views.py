@@ -271,8 +271,6 @@ def dashboard(request):
                 if (startDate < oldestDate):
                     startDate = oldestDate
 
-                
-
             else:
                 startDate = form.cleaned_data['startDate']
                 endDate = form.cleaned_data['endDate']
@@ -280,3 +278,10 @@ def dashboard(request):
     context = expenseTrackerBuilder.buildDashboardContext(request.user, startDate, endDate, preset)
     
     return render(request, 'tracker/dashboard.html', context)
+
+@login_required
+def presetTransactions(request):
+
+    context = expenseTrackerBuilder.buildPresetTransactionsContext(request.user)
+
+    return render(request, 'tracker/presetTransactions.html', context)

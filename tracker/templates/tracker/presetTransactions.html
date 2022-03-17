@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="content medium-content">
+        <h1>Presets</h1>
+        <div class="rows">
+            {% for preset in presets %}
+                <a class="btn btn-primary row">
+                    <div class="row-icon">
+                        <i class="bi {% if preset.isExpense %} bi-graph-down-arrow {% else %} bi-graph-up-arrow {% endif %} icon-left"></i>
+                    </div>
+                    <div class="row-icon-subtitle">
+                        {% if preset.isExpense %} Expense {% else %} Income {% endif %}
+                    </div>
+                    <div class="row-content">
+                        <p>{{preset.name}}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
