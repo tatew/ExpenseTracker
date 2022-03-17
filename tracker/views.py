@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, date
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -12,6 +12,7 @@ from calendar import monthrange
 from .utilities import expenseTrackerUtilities
 from .services import dataService
 from .builders import expenseTrackerBuilder
+from dateutil.relativedelta import relativedelta
 
 def index(request):
     if request.user.is_authenticated:
@@ -77,7 +78,7 @@ def logIncome(request):
             return render(request, "tracker/fullPageForm.html", context)
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
-        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.datetime.now()})
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
         form.formId = 'incomeForm'
         form.action = '/logIncome/'
         form.title = 'Log Income'
@@ -105,7 +106,7 @@ def listTransactions(request):
     transactions = transactions[:numToShow]
 
     for transaction in transactions:
-        transaction.dateStr = datetime.date.strftime(transaction.date, "%m/%d/%Y")
+        transaction.dateStr = date.strftime(transaction.date, "%m/%d/%Y")
         amountStr = f"{transaction.amount:,}"
         transaction.amountStr = f"${amountStr:>12}"
 
@@ -232,23 +233,50 @@ def deleteConfirm(request, id):
 
 @login_required
 def dashboard(request):
-    currentYear = datetime.datetime.now().year
-    currentMonth = datetime.datetime.now().month
+    currentYear = datetime.now().year
+    currentMonth = datetime.now().month
     numberOfdays = monthrange(currentYear, currentMonth)[1]
-    startDate = datetime.datetime(currentYear, currentMonth, 1)
-    endDate = datetime.datetime(currentYear, currentMonth, numberOfdays)
+    startDate = datetime(currentYear, currentMonth, 1)
+    endDate = datetime(currentYear, currentMonth, numberOfdays)
+    preset = ''
 
     if (request.method == 'POST'):
         form = ChartFilterForm(request.POST)
         if (form.is_valid()):
-            if (bool(form.cleaned_data['allData'])):
-                startDate = dataService.getOldestTransaction(request.user).date
-                endDate = dataService.getNewestTransaction(request.user).date
-                print(startDate, endDate)
+            oldestDate = dataService.getOldestTransaction(request.user).date
+            oldestDate = datetime(oldestDate.year, oldestDate.month, oldestDate.day)
+
+            preset = form.cleaned_data['preset']
+            if (preset != ''):
+                if (preset == 'ALL'):
+                    startDate = oldestDate
+                    endDate = dataService.getNewestTransaction(request.user).date
+                    endDate = datetime(endDate.year, endDate.month, endDate.day)
+                elif (preset == '1M'):
+                    startDate = datetime.now() + relativedelta(months=-1)
+                    endDate = datetime.now()
+                elif (preset == '3M'):
+                    startDate = datetime.now() + relativedelta(months=-3)
+                    endDate = datetime.now()
+                elif (preset == '6M'):
+                    startDate = datetime.now() + relativedelta(months=-6)
+                    endDate = datetime.now()
+                elif (preset == '1Y'):
+                    startDate = datetime.now() + relativedelta(years=-1)
+                    endDate = datetime.now()
+                elif (preset == 'YTD'):
+                    startDate = datetime(datetime.now().year, 1, 1)
+                    endDate = datetime.now()
+
+                if (startDate < oldestDate):
+                    startDate = oldestDate
+
+                
+
             else:
                 startDate = form.cleaned_data['startDate']
                 endDate = form.cleaned_data['endDate']
 
-    context = expenseTrackerBuilder.buildDashboardContext(request.user, startDate, endDate)
+    context = expenseTrackerBuilder.buildDashboardContext(request.user, startDate, endDate, preset)
     
     return render(request, 'tracker/dashboard.html', context)

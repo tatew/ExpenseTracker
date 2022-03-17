@@ -10,26 +10,32 @@
             <h1>Dashboard</h1>
             <div class="monthly-results">
                 <div class="monthly-results-tile">
-                    <h2>Current totals for this month</h2>
+                    <h2>Monthly Data</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th colspan="2">{{currentMonth}}, {{currentYear}}</th>
+                                <th>Month</th>
+                                <th>Income</th>
+                                <th>Expenses</th>
+                                <th>Net Balance</th>
                             </tr>
                         </thead>
-                        
-                        <tr>
-                            <th>Income</th>
-                            <td class="accounting">{{monthlyData.sumOfImcomesForMonth|spacify}}</td>
-                        </tr>
-                        <tr>
-                            <th>Expenses</th>
-                            <td class="accounting">{{monthlyData.sumOfExpensesForMonth|spacify}}</td>
-                        </tr>
-                        <tr>
-                            <th>Net Balance</th>
-                            <td class="accounting">{{monthlyData.netBalanceForMonth|spacify}}</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <th>Average</th>
+                                <td>{{monthlyData.avgIncome|spacify}}</td>
+                                <td>{{monthlyData.avgExpense|spacify}}</td>
+                                <td>{{monthlyData.avgNet|spacify}}</td>
+                            </tr>
+                            {% for month in monthlyData.monthlyDataList %}
+                                <tr>
+                                    <th>{{month.month}} {{month.year}}</th>
+                                    <td>{{month.sumOfImcomesForMonth|spacify}}</td>
+                                    <td>{{month.sumOfExpensesForMonth|spacify}}</td>
+                                    <td>{{month.netBalanceForMonth|spacify}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>   
                 </div>             
             </div>
@@ -37,17 +43,26 @@
                 <div class="filter-wrapper">
                     <div class="filters">
                         <h3 id="filterTitle">Filter Charts</h3>
+                        <p>Show data for: </p>
+                        <div class="preset-filter-buttons">
+                            <button class="btn btn-primary {% if activePreset == '1M' %} btn-active {% endif %}" onclick="clickedPreset('1M')">1M</button>
+                            <button class="btn btn-primary {% if activePreset == '3M' %} btn-active {% endif %}" onclick="clickedPreset('3M')">3M</button>
+                            <button class="btn btn-primary {% if activePreset == '6M' %} btn-active {% endif %}" onclick="clickedPreset('6M')">6M</button>
+                            <button class="btn btn-primary {% if activePreset == '1Y' %} btn-active {% endif %}" onclick="clickedPreset('1Y')">1Y</button>
+                            <button class="btn btn-primary {% if activePreset == 'YTD' %} btn-active {% endif %}" onclick="clickedPreset('YTD')">YTD</button>
+                            <button class="btn btn-primary {% if activePreset == 'ALL' %} btn-active {% endif %}" onclick="clickedPreset('ALL')">ALL</button>
+                        </div>
                         {% include "tracker/form.html" %}
                     </div>
                 </div>
                 <div class="charts">
-                    <div class="chartTile">
+                    <div class="chart-tile">
                         <canvas class="chartCanvas" id="runningTransactionTotal"></canvas>
                     </div>
-                    <div class="chartTile">
+                    <div class="chart-tile">
                         <canvas class="chartCanvas" id="transactionsByDate"></canvas>
                     </div>
-                    <div class="chartTile">
+                    <div class="chart-tile">
                         <canvas class="chartCanvas" id="expensesPerCategory"></canvas>
                     </div>
                 </div>

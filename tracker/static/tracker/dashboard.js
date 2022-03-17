@@ -1,6 +1,6 @@
-function clickedAllData() {
-    const allTimeDataInput = document.getElementById("id_allData");
-    allTimeDataInput.setAttribute("value", "true");
+function clickedPreset(preset) {
+    const presetInput = document.getElementById("id_preset");
+    presetInput.setAttribute("value", preset);
     document.getElementById("chartFilterForm").submit();
 }
 
