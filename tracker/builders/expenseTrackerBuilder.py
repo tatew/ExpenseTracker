@@ -1,8 +1,10 @@
 from calendar import month
 from ..services import dataService
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from ..forms import TransactionForm, ImportForm, ChartFilterForm
 from ..utilities import expenseTrackerUtilities
+import decimal
 
 # Always pass user or other things from request as first argument
 
@@ -47,7 +49,7 @@ def buildLogExpenseFormContext(prevUrl):
     }
     return context
 
-def buildDashboardContext(user, startDate, endDate):
+def buildDashboardContext(user, startDate, endDate, preset):
         
     form = ChartFilterForm(initial={'startDate': startDate, 'endDate': endDate})
 
@@ -61,9 +63,8 @@ def buildDashboardContext(user, startDate, endDate):
         'submit': True,
         'currentMonth': datetime.strptime(str(datetime.now().month), "%m").strftime("%B"),
         'currentYear': datetime.now().year,
-        'extraButtonsBefore': [
-            '<button onclick="clickedAllData()" class="btn btn-primary">Show data for All Time<i class="bi bi-calendar-check icon-right"></i></button>'
-        ]
+        'extraButtonsBefore': [],
+        'activePreset': preset
     }
 
     return context
@@ -106,7 +107,47 @@ def buildChartData(user, startDate, endDate):
 
 def buildMonthlyData(user):
 
-    monthlyData = getTotalsForMonth(user, datetime.now().year, datetime.now().month)
+    oldestTransactionDate = dataService.getOldestTransaction(user).date
+    oldestTransactionDateMonthAndYear = datetime(oldestTransactionDate.year, oldestTransactionDate.month, 1)
+
+    monthlyDataList = []
+    totalExpenses = 0
+    totalIncomes = 0
+    currentDate = datetime(datetime.now().year, datetime.now().month, 1)
+    endDate = oldestTransactionDateMonthAndYear
+
+    while (currentDate >= endDate):
+        totalForMonth = getTotalsForMonth(user, currentDate.year, currentDate.month)
+        totalForMonth['year'] = currentDate.year
+        totalForMonth['month'] = datetime.strptime(str(currentDate.month), "%m").strftime("%B")
+        monthlyDataList.append(totalForMonth)
+
+        totalExpenses += totalForMonth['numericSumOfExpensesForMonth']
+        totalIncomes += totalForMonth['numericSumOfImcomesForMonth']
+
+        currentDate += relativedelta(months=-1)
+
+    avgExpense = totalExpenses / len(monthlyDataList)
+    avgExpense = avgExpense.quantize(decimal.Decimal("0.01"))
+    avgExpenseString = f"{avgExpense:,}"
+    avgExpenseString = f"${avgExpenseString:>12}"
+
+    avgIncome = totalIncomes / len(monthlyDataList)
+    avgIncome = avgIncome.quantize(decimal.Decimal("0.01"))
+    avgIncomeString = f"{avgIncome:,}"
+    avgIncomeString = f"${avgIncomeString:>12}"
+
+    avgNet = (totalIncomes + totalExpenses) / len(monthlyDataList)
+    avgNet = avgNet.quantize(decimal.Decimal("0.01"))
+    avgNetString = f"{avgNet:,}"
+    avgNetString = f"${avgNetString:>12}"
+
+    monthlyData = {
+        'monthlyDataList': monthlyDataList,
+        'avgExpense': avgExpenseString,
+        'avgIncome': avgIncomeString,
+        'avgNet': avgNetString
+    }
 
     return monthlyData
 
@@ -125,6 +166,8 @@ def getTotalsForMonth(user, year, month):
         'sumOfExpensesForMonth': expnesesString,
         'sumOfImcomesForMonth': incomesString,
         'netBalanceForMonth': netBalanceString,
+        'numericSumOfExpensesForMonth': sumOfExpensesForMonth,
+        'numericSumOfImcomesForMonth': sumOfIncomesForMonth
     }
 
     return totalsForMonth

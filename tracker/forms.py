@@ -58,10 +58,9 @@ class ChartFilterForm(forms.Form):
     iconClasses = {
         'startDate': 'bi bi-calendar-date icon-left',
         'endDate': 'bi bi-calendar-date icon-left',
-        'allData': 'bi bi-calendar-date icon-left',
     }
 
     startDate = forms.DateField(widget = widgets.DateInput(attrs={'type': 'date'}), label='Start Date')
     endDate = forms.DateField(widget = widgets.DateInput(attrs={'type': 'date'}), label='End Date')
-    allData = forms.BooleanField(widget = forms.HiddenInput(), required = False)
+    preset = forms.CharField(widget = forms.HiddenInput(), required=False)
 

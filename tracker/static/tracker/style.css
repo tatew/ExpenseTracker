@@ -13,7 +13,7 @@ nav {
     justify-content: space-between;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, p{
     margin: 0;
 }
 
@@ -73,20 +73,17 @@ tr.clickable:hover {
     padding: 0.5rem;
     font-size: 1rem;
     text-align: center;
-}
-
-button.btn {
-    background-color: #0a3622;
     font-family: 'JetBrains Mono', monospace;
     cursor: pointer;
 }
 
 .btn-primary {
+    background-color: #0a3622;
     border-color: white;
     color: white;
 }
 
-.btn-primary:hover {
+.btn-primary:hover, .btn-active {
     border-color: white;
     color: #198754;
     background-color: white;
@@ -304,7 +301,11 @@ button.btn {
     width: 100%;
 }
 
-.chartTile {
+.preset-filter-buttons {
+    margin: 1rem;
+}
+
+.chart-tile {
     border: 0.1rem solid white;
     border-radius: 0.4rem;
     background-color: #212529;
