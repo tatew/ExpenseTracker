@@ -35,8 +35,20 @@ def buildLogExpenseFormErrorsContext(form):
 
     return context
 
-def buildLogExpenseFormContext(prevUrl):
-    form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+def buildLogExpenseFormContext(prevUrl, preset):
+    if (preset == None):
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+    else:
+        form = TransactionForm(initial={
+            'prevUrl': prevUrl,
+            'date': preset.date,
+            'vendor': preset.vendor,
+            'reason': preset.reason,
+            'method': preset.method,
+            'category': preset.category,
+            'amount': abs(preset.amount),
+        })
+
     form.formId = 'expenseForm'
     form.action = '/logExpense/'
     form.title = 'Log Expense'
@@ -47,6 +59,49 @@ def buildLogExpenseFormContext(prevUrl):
         'cancelBack': True
     }
     return context
+
+def buildLogIncomeSuccessContext(user, form):
+    income = dataService.createIncomeFromForm(form, user)
+    context = {
+        'income': income
+    }
+    return context
+
+def biuldLogIncomeErrorsContext(user, form):
+    context = {
+        'form': form,
+        'submit': True,
+        'cancelBack': True
+    }
+    
+    return context
+
+def buildLogIncomeFormContext(prevUrl, preset):
+    if (preset == None):
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+    else:
+        form = TransactionForm(initial={
+            'prevUrl': prevUrl,
+            'date': preset.date,
+            'vendor': preset.vendor,
+            'reason': preset.reason,
+            'method': preset.method,
+            'category': preset.category,
+            'amount': preset.amount,
+        })
+
+    form.formId = 'incomeForm'
+    form.action = '/logIncome/'
+    form.title = 'Log Income'
+
+    context = {
+        'form': form,
+        'submit': True,
+        'cancelBack': True
+    }
+    return context 
+
+
 
 def buildDashboardContext(user, startDate, endDate, preset):
         

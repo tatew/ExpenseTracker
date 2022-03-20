@@ -756,6 +756,27 @@ class TestDataService(TestCase):
         self.assertEqual(len(Transaction.objects.all()), 1)
         self.assertAlmostEqual(Transaction.objects.all()[0].amount, Decimal(-10.44))
 
+    def test_createExpenseFromForm(self):
+        #arrange
+        form = TransactionForm(data={
+            'date': "2022-01-28",
+            'vendor': 'test',
+            'reason': 'test',
+            'category': self.categ1.id,
+            'method': self.method1.id,
+            'amount': 10.44,
+            'user': self.user1
+        })
+
+        form.is_valid()
+
+        #act
+        result = dataService.createIncomeFromForm(form, self.user1)
+
+        #assert
+        self.assertEqual(len(Transaction.objects.all()), 1)
+        self.assertAlmostEqual(Transaction.objects.all()[0].amount, Decimal(10.44))
+
     def test_getOldestTransaction(self):
         #arrange
         Transaction.objects.create(
@@ -913,18 +934,43 @@ class TestDataService(TestCase):
         #arrange
         TransactionPreset.objects.create(
             name="atest",
-            user=self.user1
+            user=self.user1,
+            isExpense=True
         )
         TransactionPreset.objects.create(
             name="btest",
-            user=self.user1
+            user=self.user1,
+            isExpense=True
         )
         TransactionPreset.objects.create(
             name="test",
-            user=self.user2
+            user=self.user2,
+            isExpense=True
         )
         #act
         result = dataService.getTransactionPresetsForUser(self.user1)
         #assert
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0].name, "atest")
+
+    def testGetTransactionPresetById(self):
+        #arrange
+        txn = TransactionPreset.objects.create(
+            name="atest",
+            user=self.user1,
+            isExpense=True
+        )
+        TransactionPreset.objects.create(
+            name="btest",
+            user=self.user1,
+            isExpense=True
+        )
+        TransactionPreset.objects.create(
+            name="test",
+            user=self.user2,
+            isExpense=True
+        )
+        #act
+        result = dataService.getTransactionPresetById(txn.id)
+        #assert
+        self.assertEqual(result.name, "atest")

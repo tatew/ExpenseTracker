@@ -46,8 +46,13 @@ def logExpense(request):
             context = expenseTrackerBuilder.buildLogExpenseFormErrorsContext(form)
             return render(request, "tracker/fullPageForm.html", context)
     else:
+        presetId = request.GET.get('presetTransactionId', '')
         prevUrl = request.GET.get('prevUrl', 'home')
-        context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl)
+        if (presetId != ''):
+            presetTransaction = dataService.getTransactionPresetById(presetId)
+            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, presetTransaction)
+        else:
+            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, None)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
@@ -57,38 +62,19 @@ def logIncome(request):
         form = TransactionForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            income = Transaction(
-                date=form.cleaned_data['date'],
-                reason=form.cleaned_data['reason'],
-                vendor=form.cleaned_data['vendor'],
-                method=form.cleaned_data['method'],
-                category=form.cleaned_data['category'],
-                amount=form.cleaned_data['amount'],
-                user=request.user
-            )
-            income.save()
-            return render(request, 'tracker/logIncomeSuccess.html', {'income': income})
+            context = expenseTrackerBuilder.buildLogIncomeSuccessContext(request.user, form)
+            return render(request, 'tracker/logIncomeSuccess.html', context)
         else:
-            context = {
-                'form': form,
-                'submit': True,
-                'cancelBack': True
-            }
-
+            context = expenseTrackerBuilder.biuldLogIncomeErrorsContext(form)
             return render(request, "tracker/fullPageForm.html", context)
     else:
+        presetId = request.GET.get('presetTransactionId', '')
         prevUrl = request.GET.get('prevUrl', 'home')
-        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
-        form.formId = 'incomeForm'
-        form.action = '/logIncome/'
-        form.title = 'Log Income'
-
-        context = {
-            'form': form,
-            'submit': True,
-            'cancelBack': True
-        }
-        
+        if (presetId != ''):
+            presetTransaction = dataService.getTransactionPresetById(presetId)
+            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, presetTransaction)
+        else:
+            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, None)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required

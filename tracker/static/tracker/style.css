@@ -142,6 +142,13 @@ tr.clickable:hover {
     text-align: center;
 }
 
+/* flex row */
+
+.flex-row {
+    display: flex;
+    gap: 1rem
+}
+
 /* form */
 
 .form-wrapper {
