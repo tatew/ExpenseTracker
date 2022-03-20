@@ -2,14 +2,11 @@ from datetime import datetime, date
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Transaction, Category, Method
-from .forms import TransactionForm, ImportForm, ChartFilterForm
+from .forms import TransactionForm, PresetTransactionForm, ImportForm, ChartFilterForm
 from .services.importService import importTransactionsCsv
 import csv
 import io
-from django.db.models import Sum
 from calendar import monthrange
-from .utilities import expenseTrackerUtilities
 from .services import dataService
 from .builders import expenseTrackerBuilder
 from dateutil.relativedelta import relativedelta
@@ -271,3 +268,16 @@ def presetTransactions(request):
     context = expenseTrackerBuilder.buildPresetTransactionsContext(request.user)
 
     return render(request, 'tracker/presetTransactions.html', context)
+
+@login_required
+def createPreset(request):
+
+    if (request.method == 'POST'):
+        form = PresetTransactionForm(request.POST)
+        if (form.is_valid()):
+            print(form.cleaned_data)
+    else:
+        prevUrl = request.GET.get('prevUrl', 'home')
+        context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl)
+
+    return render(request, 'tracker/fullPageForm.html', context)

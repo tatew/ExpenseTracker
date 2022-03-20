@@ -1,7 +1,7 @@
 from ..services import dataService
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from ..forms import TransactionForm, ImportForm, ChartFilterForm
+from ..forms import TransactionForm, PresetTransactionForm, ChartFilterForm
 from ..utilities import expenseTrackerUtilities
 import decimal
 
@@ -231,6 +231,25 @@ def buildPresetTransactionsContext(user):
 
     context = {
         'presets': presets
+    }
+
+    return context
+
+def buildCreatePresetTransactionFormContext(prevUrl):
+    form = PresetTransactionForm(initial={'prevUrl': prevUrl})
+
+    context = {
+        'form': form,
+        'submit': True,
+        'cancelBack': True
+    }
+
+    return context
+
+def buildCreatePresetTransactionSuccessContext(user, form):
+
+    context = {
+        'preset': preset
     }
 
     return context
