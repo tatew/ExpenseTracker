@@ -1,4 +1,3 @@
-from multiprocessing.dummy import freeze_support
 from django.test import TestCase
 from ..models import Transaction, Category, Method, TransactionPreset
 from datetime import datetime
@@ -6,7 +5,7 @@ from django.contrib.auth.models import User
 from ..services import dataService
 from freezegun import freeze_time
 from decimal import Decimal
-from ..forms import TransactionForm
+from ..forms import TransactionForm, PresetTransactionForm
 
 class TestDataService(TestCase):
 
@@ -756,7 +755,7 @@ class TestDataService(TestCase):
         self.assertEqual(len(Transaction.objects.all()), 1)
         self.assertAlmostEqual(Transaction.objects.all()[0].amount, Decimal(-10.44))
 
-    def test_createExpenseFromForm(self):
+    def test_createIncomeFromForm(self):
         #arrange
         form = TransactionForm(data={
             'date': "2022-01-28",
@@ -776,6 +775,29 @@ class TestDataService(TestCase):
         #assert
         self.assertEqual(len(Transaction.objects.all()), 1)
         self.assertAlmostEqual(Transaction.objects.all()[0].amount, Decimal(10.44))
+
+    def test_createPresetTransactionFromForm(self):
+        #arrange
+        form = PresetTransactionForm(data={
+            'name': 'test',
+            'isExpense': True,
+            'vendor': 'test',
+            'reason': 'test',
+            'category': self.categ1.id,
+            'method': self.method1.id,
+            'amount': 10.44,
+            'user': self.user1
+        })
+
+        form.is_valid()
+
+        #act
+        result = dataService.createPresetTransactionFromForm(form, self.user1)
+
+        #assert
+        self.assertEqual(len(TransactionPreset.objects.all()), 1)
+        self.assertAlmostEqual(TransactionPreset.objects.all()[0].amount, Decimal(10.44))
+        self.assertEqual(TransactionPreset.objects.all()[0].isExpense, True)
 
     def test_getOldestTransaction(self):
         #arrange
