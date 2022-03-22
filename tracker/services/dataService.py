@@ -82,6 +82,21 @@ def createIncomeFromForm(form, user):
     income.save()
     return income
 
+def createPresetTransactionFromForm(form, user):
+    preset = TransactionPreset(
+        name=form.cleaned_data['name'],
+        isExpense=form.cleaned_data['isExpense'],
+        reason=form.cleaned_data['reason'],
+        vendor=form.cleaned_data['vendor'],
+        method=form.cleaned_data['method'],
+        category=form.cleaned_data['category'],
+        amount=form.cleaned_data['amount'],
+        user=user
+    )
+
+    preset.save()
+    return preset
+
 def getOldestTransaction(user):
     return Transaction.objects.filter(user=user).all().order_by('date')[0]
 

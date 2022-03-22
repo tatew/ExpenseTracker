@@ -41,12 +41,12 @@ def buildLogExpenseFormContext(prevUrl, preset):
     else:
         form = TransactionForm(initial={
             'prevUrl': prevUrl,
-            'date': preset.date,
+            'date': datetime.now(),
             'vendor': preset.vendor,
             'reason': preset.reason,
             'method': preset.method,
             'category': preset.category,
-            'amount': abs(preset.amount),
+            'amount': preset.amount,
         })
 
     form.formId = 'expenseForm'
@@ -67,7 +67,7 @@ def buildLogIncomeSuccessContext(user, form):
     }
     return context
 
-def biuldLogIncomeErrorsContext(user, form):
+def buildLogIncomeErrorsContext(user, form):
     context = {
         'form': form,
         'submit': True,
@@ -82,7 +82,7 @@ def buildLogIncomeFormContext(prevUrl, preset):
     else:
         form = TransactionForm(initial={
             'prevUrl': prevUrl,
-            'date': preset.date,
+            'date': datetime.now(),
             'vendor': preset.vendor,
             'reason': preset.reason,
             'method': preset.method,
@@ -117,7 +117,6 @@ def buildDashboardContext(user, startDate, endDate, preset):
         'submit': True,
         'currentMonth': datetime.strptime(str(datetime.now().month), "%m").strftime("%B"),
         'currentYear': datetime.now().year,
-        'extraButtonsBefore': [],
         'activePreset': preset
     }
 
@@ -236,7 +235,7 @@ def buildPresetTransactionsContext(user):
     return context
 
 def buildCreatePresetTransactionFormContext(prevUrl):
-    form = PresetTransactionForm(initial={'prevUrl': prevUrl})
+    form = PresetTransactionForm(initial={'prevUrl': prevUrl, 'isExpense': True})
 
     context = {
         'form': form,
@@ -246,8 +245,17 @@ def buildCreatePresetTransactionFormContext(prevUrl):
 
     return context
 
-def buildCreatePresetTransactionSuccessContext(user, form):
+def buildCreatePresetTransactionFormErrorsContext(form):
+    context = {
+        'form': form,
+        'submit': True,
+        'cancelBack': True
+    }
 
+    return context
+
+def buildCreatePresetTransactionSuccessContext(user, form):
+    preset = dataService.createPresetTransactionFromForm(form, user)
     context = {
         'preset': preset
     }

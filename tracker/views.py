@@ -62,7 +62,7 @@ def logIncome(request):
             context = expenseTrackerBuilder.buildLogIncomeSuccessContext(request.user, form)
             return render(request, 'tracker/logIncomeSuccess.html', context)
         else:
-            context = expenseTrackerBuilder.biuldLogIncomeErrorsContext(form)
+            context = expenseTrackerBuilder.buildLogIncomeErrorsContext(form)
             return render(request, "tracker/fullPageForm.html", context)
     else:
         presetId = request.GET.get('presetTransactionId', '')
@@ -276,8 +276,12 @@ def createPreset(request):
         form = PresetTransactionForm(request.POST)
         if (form.is_valid()):
             print(form.cleaned_data)
+            context = expenseTrackerBuilder.buildCreatePresetTransactionSuccessContext(request.user, form)
+            return render(request, 'tracker/createPresetSuccess.html', context)
+        else:
+            context = expenseTrackerBuilder.buildCreatePresetTransactionFormErrorsContext(form)
+            return render(request, 'tracker/createPresetTransaction.html', context)
     else:
-        prevUrl = request.GET.get('prevUrl', 'home')
+        prevUrl = 'presetTransactions'
         context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl)
-
-    return render(request, 'tracker/fullPageForm.html', context)
+        return render(request, 'tracker/createPresetTransaction.html', context)

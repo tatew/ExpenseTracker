@@ -8,7 +8,7 @@
         <h1>Presets</h1>
         <div class="flex-row">
             <a href="{% url 'chooseTransactionType' %}" class="btn btn-primary"><i class="bi bi-arrow-left icon-left"></i>Back</a>
-            <a href="/presetTransactions/new?prevUrl=presetTransactions" class="btn btn-primary"><i class="bi bi-plus-lg icon-left"></i>Add New Preset</a>
+            <a href="{% url 'createPreset' %}" class="btn btn-primary"><i class="bi bi-plus-lg icon-left"></i>Add New Preset</a>
         </div>
         <div class="rows">
             {% for preset in presets %}

@@ -1,3 +1,5 @@
+from cProfile import label
+from importlib.metadata import requires
 from .models import Transaction, TransactionPreset
 from django import forms
 from django.forms import ModelForm, widgets
@@ -55,14 +57,13 @@ class PresetTransactionForm(ModelForm):
 
     prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
 
-
-
     class Meta:
         model = TransactionPreset
         fields = '__all__'
-        exclude = ('user', 'date', 'isExpense')
+        exclude = ('user', 'date')
         widgets = {
-            'amount': widgets.NumberInput(attrs={'inputmode': 'decimal'})
+            'amount': widgets.NumberInput(attrs={'inputmode': 'decimal'}),
+            'isExpense': widgets.HiddenInput()
         }
     
 
