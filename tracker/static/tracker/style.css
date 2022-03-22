@@ -229,12 +229,12 @@ tr.clickable:hover {
     font-size: 200%;
 }
 
-.list {
+.table {
     width: 100% !important;
     overflow-x: scroll; 
 }
 
-.list table {
+.table table {
     display: block;
     max-width: -moz-fit-content;
     max-width: fit-content;
@@ -303,6 +303,10 @@ tr.clickable:hover {
 
 .preset-filter-buttons {
     margin: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .chart-tile {
