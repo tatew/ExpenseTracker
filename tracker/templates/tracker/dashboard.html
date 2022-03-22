@@ -11,32 +11,34 @@
             <div class="monthly-results">
                 <div class="monthly-results-tile">
                     <h2>Monthly Data</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Month</th>
-                                <th>Income</th>
-                                <th>Expenses</th>
-                                <th>Net Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>Average</th>
-                                <td>{{monthlyData.avgIncome|spacify}}</td>
-                                <td>{{monthlyData.avgExpense|spacify}}</td>
-                                <td>{{monthlyData.avgNet|spacify}}</td>
-                            </tr>
-                            {% for month in monthlyData.monthlyDataList %}
+                    <div class="table">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <th>{{month.month}} {{month.year}}</th>
-                                    <td>{{month.sumOfImcomesForMonth|spacify}}</td>
-                                    <td>{{month.sumOfExpensesForMonth|spacify}}</td>
-                                    <td>{{month.netBalanceForMonth|spacify}}</td>
+                                    <th>Month</th>
+                                    <th>Income</th>
+                                    <th>Expenses</th>
+                                    <th>Net Balance</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>   
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Average</th>
+                                    <td>{{monthlyData.avgIncome|spacify}}</td>
+                                    <td>{{monthlyData.avgExpense|spacify}}</td>
+                                    <td>{{monthlyData.avgNet|spacify}}</td>
+                                </tr>
+                                {% for month in monthlyData.monthlyDataList %}
+                                    <tr>
+                                        <th>{{month.month}} {{month.year}}</th>
+                                        <td>{{month.sumOfImcomesForMonth|spacify}}</td>
+                                        <td>{{month.sumOfExpensesForMonth|spacify}}</td>
+                                        <td>{{month.netBalanceForMonth|spacify}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table> 
+                    </div>  
                 </div>             
             </div>
             <div class="charts-section">
