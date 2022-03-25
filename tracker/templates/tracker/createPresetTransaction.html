@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="content medium-content">
+        <script type="text/javascript" src="{% static 'tracker/addPresetTransaction.js' %}"></script>
+        <h1 class="page-title">{{ form.title }}</h1>
+        <div class="cards medium-cards">
+            <button onclick="clickedPresetType('expense')" class="btn btn-primary btn-active card medium-card" id="expensePresetType"><i class="bi bi-graph-down-arrow"></i>Expense</button>
+            <button onclick="clickedPresetType('income')" class="btn btn-primary card medium-card" id="incomePresetType"><i class="bi bi-graph-up-arrow"></i>Income</button>
+        </div>
+        {% include "tracker/form.html" %}
+    </div>
+{% endblock %}

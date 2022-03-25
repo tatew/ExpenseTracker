@@ -2,14 +2,11 @@ from datetime import datetime, date
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Transaction, Category, Method
-from .forms import TransactionForm, ImportForm, ChartFilterForm
+from .forms import TransactionForm, PresetTransactionForm, ImportForm, ChartFilterForm
 from .services.importService import importTransactionsCsv
 import csv
 import io
-from django.db.models import Sum
 from calendar import monthrange
-from .utilities import expenseTrackerUtilities
 from .services import dataService
 from .builders import expenseTrackerBuilder
 from dateutil.relativedelta import relativedelta
@@ -46,8 +43,13 @@ def logExpense(request):
             context = expenseTrackerBuilder.buildLogExpenseFormErrorsContext(form)
             return render(request, "tracker/fullPageForm.html", context)
     else:
+        presetId = request.GET.get('presetTransactionId', '')
         prevUrl = request.GET.get('prevUrl', 'home')
-        context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl)
+        if (presetId != ''):
+            presetTransaction = dataService.getTransactionPresetById(presetId)
+            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, presetTransaction)
+        else:
+            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, None)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
@@ -57,38 +59,19 @@ def logIncome(request):
         form = TransactionForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            income = Transaction(
-                date=form.cleaned_data['date'],
-                reason=form.cleaned_data['reason'],
-                vendor=form.cleaned_data['vendor'],
-                method=form.cleaned_data['method'],
-                category=form.cleaned_data['category'],
-                amount=form.cleaned_data['amount'],
-                user=request.user
-            )
-            income.save()
-            return render(request, 'tracker/logIncomeSuccess.html', {'income': income})
+            context = expenseTrackerBuilder.buildLogIncomeSuccessContext(request.user, form)
+            return render(request, 'tracker/logIncomeSuccess.html', context)
         else:
-            context = {
-                'form': form,
-                'submit': True,
-                'cancelBack': True
-            }
-
+            context = expenseTrackerBuilder.buildLogIncomeErrorsContext(form)
             return render(request, "tracker/fullPageForm.html", context)
     else:
+        presetId = request.GET.get('presetTransactionId', '')
         prevUrl = request.GET.get('prevUrl', 'home')
-        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
-        form.formId = 'incomeForm'
-        form.action = '/logIncome/'
-        form.title = 'Log Income'
-
-        context = {
-            'form': form,
-            'submit': True,
-            'cancelBack': True
-        }
-        
+        if (presetId != ''):
+            presetTransaction = dataService.getTransactionPresetById(presetId)
+            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, presetTransaction)
+        else:
+            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, None)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
@@ -271,8 +254,6 @@ def dashboard(request):
                 if (startDate < oldestDate):
                     startDate = oldestDate
 
-                
-
             else:
                 startDate = form.cleaned_data['startDate']
                 endDate = form.cleaned_data['endDate']
@@ -280,3 +261,27 @@ def dashboard(request):
     context = expenseTrackerBuilder.buildDashboardContext(request.user, startDate, endDate, preset)
     
     return render(request, 'tracker/dashboard.html', context)
+
+@login_required
+def presetTransactions(request):
+
+    context = expenseTrackerBuilder.buildPresetTransactionsContext(request.user)
+
+    return render(request, 'tracker/presetTransactions.html', context)
+
+@login_required
+def createPreset(request):
+
+    if (request.method == 'POST'):
+        form = PresetTransactionForm(request.POST)
+        if (form.is_valid()):
+            print(form.cleaned_data)
+            context = expenseTrackerBuilder.buildCreatePresetTransactionSuccessContext(request.user, form)
+            return render(request, 'tracker/createPresetSuccess.html', context)
+        else:
+            context = expenseTrackerBuilder.buildCreatePresetTransactionFormErrorsContext(form)
+            return render(request, 'tracker/createPresetTransaction.html', context)
+    else:
+        prevUrl = 'presetTransactions'
+        context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl)
+        return render(request, 'tracker/createPresetTransaction.html', context)

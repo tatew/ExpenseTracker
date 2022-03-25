@@ -1,7 +1,7 @@
-from django.db import models
-from django.db.models.base import Model
-from .models import Transaction
-from django import forms #import ModelForm, widgets
+from cProfile import label
+from importlib.metadata import requires
+from .models import Transaction, TransactionPreset
+from django import forms
 from django.forms import ModelForm, widgets
 from .validators import validate_file_extension_csv
 
@@ -34,6 +34,38 @@ class TransactionForm(ModelForm):
             'date': widgets.DateInput(attrs={'type': 'date'}),
             'amount': widgets.NumberInput(attrs={'inputmode': 'decimal'})
         }
+
+class PresetTransactionForm(ModelForm):
+
+    formId = 'presetTransactionForm'
+    action = '/presetTransactions/new/'
+    title = 'Create Preset'
+    formWrapperClass = 'form-wrapper'
+
+    iconClasses = {
+        'name': 'bi bi-quote icon-left',
+        'vendor': 'bi bi-shop icon-left',
+        'reason': 'bi bi-question-square icon-left',
+        'category': 'bi bi-card-list icon-left',
+        'method': 'bi bi-credit-card icon-left',
+        'amount': 'bi bi-currency-dollar icon-left'
+    }
+
+    def __init__(self, *args, **kwargs):
+        super(PresetTransactionForm, self).__init__(*args, **kwargs)
+        self.fields['amount'].widget.attrs['min'] = 0
+
+    prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
+
+    class Meta:
+        model = TransactionPreset
+        fields = '__all__'
+        exclude = ('user', 'date')
+        widgets = {
+            'amount': widgets.NumberInput(attrs={'inputmode': 'decimal'}),
+            'isExpense': widgets.HiddenInput()
+        }
+    
 
 class ImportForm(forms.Form):
     formId = 'importForm'

@@ -7,6 +7,8 @@ urlpatterns = [
     url(r"^accounts/", include("django.contrib.auth.urls")),
     path('home/', views.home, name='home'),
     path('chooseTransactionType/', views.chooseTransactionType, name='chooseTransactionType'),
+    path('presetTransactions/', views.presetTransactions, name='presetTrasactions'),
+    path('presetTransactions/new/', views.createPreset, name='createPreset'),
     path('logIncome/', views.logIncome, name='logIncome'),
     path('logExpense/', views.logExpense, name='logExpense'),
     path('import/', views.importTransactions, name='import'),

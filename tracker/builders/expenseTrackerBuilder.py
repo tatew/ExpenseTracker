@@ -1,8 +1,7 @@
-from calendar import month
 from ..services import dataService
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from ..forms import TransactionForm, ImportForm, ChartFilterForm
+from ..forms import TransactionForm, PresetTransactionForm, ChartFilterForm
 from ..utilities import expenseTrackerUtilities
 import decimal
 
@@ -36,8 +35,20 @@ def buildLogExpenseFormErrorsContext(form):
 
     return context
 
-def buildLogExpenseFormContext(prevUrl):
-    form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+def buildLogExpenseFormContext(prevUrl, preset):
+    if (preset == None):
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+    else:
+        form = TransactionForm(initial={
+            'prevUrl': prevUrl,
+            'date': datetime.now(),
+            'vendor': preset.vendor,
+            'reason': preset.reason,
+            'method': preset.method,
+            'category': preset.category,
+            'amount': preset.amount,
+        })
+
     form.formId = 'expenseForm'
     form.action = '/logExpense/'
     form.title = 'Log Expense'
@@ -48,6 +59,49 @@ def buildLogExpenseFormContext(prevUrl):
         'cancelBack': True
     }
     return context
+
+def buildLogIncomeSuccessContext(user, form):
+    income = dataService.createIncomeFromForm(form, user)
+    context = {
+        'income': income
+    }
+    return context
+
+def buildLogIncomeErrorsContext(user, form):
+    context = {
+        'form': form,
+        'submit': True,
+        'cancelBack': True
+    }
+    
+    return context
+
+def buildLogIncomeFormContext(prevUrl, preset):
+    if (preset == None):
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+    else:
+        form = TransactionForm(initial={
+            'prevUrl': prevUrl,
+            'date': datetime.now(),
+            'vendor': preset.vendor,
+            'reason': preset.reason,
+            'method': preset.method,
+            'category': preset.category,
+            'amount': preset.amount,
+        })
+
+    form.formId = 'incomeForm'
+    form.action = '/logIncome/'
+    form.title = 'Log Income'
+
+    context = {
+        'form': form,
+        'submit': True,
+        'cancelBack': True
+    }
+    return context 
+
+
 
 def buildDashboardContext(user, startDate, endDate, preset):
         
@@ -63,7 +117,6 @@ def buildDashboardContext(user, startDate, endDate, preset):
         'submit': True,
         'currentMonth': datetime.strptime(str(datetime.now().month), "%m").strftime("%B"),
         'currentYear': datetime.now().year,
-        'extraButtonsBefore': [],
         'activePreset': preset
     }
 
@@ -171,3 +224,40 @@ def getTotalsForMonth(user, year, month):
     }
 
     return totalsForMonth
+
+def buildPresetTransactionsContext(user):
+    presets = dataService.getTransactionPresetsForUser(user);
+
+    context = {
+        'presets': presets
+    }
+
+    return context
+
+def buildCreatePresetTransactionFormContext(prevUrl):
+    form = PresetTransactionForm(initial={'prevUrl': prevUrl, 'isExpense': True})
+
+    context = {
+        'form': form,
+        'submit': True,
+        'cancelBack': True
+    }
+
+    return context
+
+def buildCreatePresetTransactionFormErrorsContext(form):
+    context = {
+        'form': form,
+        'submit': True,
+        'cancelBack': True
+    }
+
+    return context
+
+def buildCreatePresetTransactionSuccessContext(user, form):
+    preset = dataService.createPresetTransactionFromForm(form, user)
+    context = {
+        'preset': preset
+    }
+
+    return context

@@ -1,4 +1,4 @@
-from ..models import Transaction, Category, Method
+from ..models import Transaction, Category, Method, TransactionPreset
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.db.models import Sum
@@ -69,8 +69,42 @@ def createExpenseFromForm(form, user):
     expense.save()
     return expense
 
+def createIncomeFromForm(form, user):
+    income = Transaction(
+        date=form.cleaned_data['date'],
+        reason=form.cleaned_data['reason'],
+        vendor=form.cleaned_data['vendor'],
+        method=form.cleaned_data['method'],
+        category=form.cleaned_data['category'],
+        amount=form.cleaned_data['amount'],
+        user=user
+    )
+    income.save()
+    return income
+
+def createPresetTransactionFromForm(form, user):
+    preset = TransactionPreset(
+        name=form.cleaned_data['name'],
+        isExpense=form.cleaned_data['isExpense'],
+        reason=form.cleaned_data['reason'],
+        vendor=form.cleaned_data['vendor'],
+        method=form.cleaned_data['method'],
+        category=form.cleaned_data['category'],
+        amount=form.cleaned_data['amount'],
+        user=user
+    )
+
+    preset.save()
+    return preset
+
 def getOldestTransaction(user):
     return Transaction.objects.filter(user=user).all().order_by('date')[0]
 
 def getNewestTransaction(user):
     return Transaction.objects.filter(user=user).all().order_by('-date')[0]
+
+def getTransactionPresetsForUser(user):
+    return TransactionPreset.objects.filter(user=user).order_by('name')
+
+def getTransactionPresetById(id):
+    return TransactionPreset.objects.get(id=id)

@@ -95,11 +95,6 @@
     }
 </script>
 <div class="{{ form.formWrapperClass }}">
-    <div class="extra-buttons-before">
-        {% for button in extraButtonsBefore %}
-            {{ button|safe }}
-        {% endfor %}
-    </div>
     <form id="{{ form.formId }}" method="post" action="{{ form.action }}" {% if form.hasEncType %} enctype="{{ form.enctype }}" {% endif %}>
         {% csrf_token %}
         <div class="form" id="form">
