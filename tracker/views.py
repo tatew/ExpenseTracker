@@ -47,9 +47,9 @@ def logExpense(request):
         prevUrl = request.GET.get('prevUrl', 'home')
         if (presetId != ''):
             presetTransaction = dataService.getTransactionPresetById(presetId)
-            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, presetTransaction)
+            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, presetTransaction, request.user)
         else:
-            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, None)
+            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, None, request.user)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
@@ -69,9 +69,9 @@ def logIncome(request):
         prevUrl = request.GET.get('prevUrl', 'home')
         if (presetId != ''):
             presetTransaction = dataService.getTransactionPresetById(presetId)
-            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, presetTransaction)
+            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, presetTransaction, request.user)
         else:
-            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, None)
+            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, None, request.user)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
@@ -285,3 +285,10 @@ def createPreset(request):
         prevUrl = 'presetTransactions'
         context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl)
         return render(request, 'tracker/createPresetTransaction.html', context)
+
+@login_required
+def settings(request):
+
+    context = expenseTrackerBuilder.buildSettingsHomeContext(request.user)
+
+    return render(request, 'tracker/settingsHome.html', context)

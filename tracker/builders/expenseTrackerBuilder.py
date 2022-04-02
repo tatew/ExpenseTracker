@@ -1,3 +1,4 @@
+from tracker.models import Method
 from ..services import dataService
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -35,9 +36,9 @@ def buildLogExpenseFormErrorsContext(form):
 
     return context
 
-def buildLogExpenseFormContext(prevUrl, preset):
+def buildLogExpenseFormContext(prevUrl, preset, user):
     if (preset == None):
-        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now(), 'user': user})
     else:
         form = TransactionForm(initial={
             'prevUrl': prevUrl,
@@ -47,6 +48,7 @@ def buildLogExpenseFormContext(prevUrl, preset):
             'method': preset.method,
             'category': preset.category,
             'amount': preset.amount,
+            'user': user
         })
 
     form.formId = 'expenseForm'
@@ -76,9 +78,9 @@ def buildLogIncomeErrorsContext(user, form):
     
     return context
 
-def buildLogIncomeFormContext(prevUrl, preset):
+def buildLogIncomeFormContext(prevUrl, preset, user):
     if (preset == None):
-        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now(), 'user': user})
     else:
         form = TransactionForm(initial={
             'prevUrl': prevUrl,
@@ -88,6 +90,7 @@ def buildLogIncomeFormContext(prevUrl, preset):
             'method': preset.method,
             'category': preset.category,
             'amount': preset.amount,
+            'user': user
         })
 
     form.formId = 'incomeForm'
@@ -261,3 +264,6 @@ def buildCreatePresetTransactionSuccessContext(user, form):
     }
 
     return context
+
+def buildSettingsHomeContext(user):
+    return {}
