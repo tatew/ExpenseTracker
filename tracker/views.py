@@ -288,7 +288,21 @@ def createPreset(request):
 
 @login_required
 def settings(request):
-
     context = expenseTrackerBuilder.buildSettingsHomeContext(request.user)
 
     return render(request, 'tracker/settingsHome.html', context)
+
+@login_required
+def methods(request):
+    context = expenseTrackerBuilder.buildMethodsContext(request.user)
+
+    return render(request, 'tracker/methods.html', context)
+
+def method(request, id):
+    method = dataService.getMethodById(id)
+    if (method.user != request.user):
+        raise Http404
+
+    context = expenseTrackerBuilder.buildMethodContext(request.user, id)
+
+    return render(request, 'tracker/method.html', context)

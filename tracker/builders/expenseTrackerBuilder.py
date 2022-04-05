@@ -1,3 +1,5 @@
+from operator import methodcaller
+import re
 from tracker.models import Method
 from ..services import dataService
 from datetime import datetime
@@ -267,3 +269,22 @@ def buildCreatePresetTransactionSuccessContext(user, form):
 
 def buildSettingsHomeContext(user):
     return {}
+
+def buildMethodsContext(user):
+    methods = dataService.getMethodsForUser(user)
+
+    context = {
+        'methods': methods,
+        'user': user.username
+    }
+    
+    return context
+
+def buildMethodContext(user, id):
+    method = dataService.getMethodById(id)
+
+    context = {
+        'method': method
+    }
+
+    return context

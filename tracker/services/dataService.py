@@ -108,3 +108,9 @@ def getTransactionPresetsForUser(user):
 
 def getTransactionPresetById(id):
     return TransactionPreset.objects.get(id=id)
+
+def getMethodsForUser(user):
+    return Method.objects.filter(user=user)
+
+def getMethodById(id):
+    return Method.objects.get(id=id)
