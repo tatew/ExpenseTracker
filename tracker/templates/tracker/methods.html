@@ -1,16 +1,30 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block nav %}
 {% endblock %}
 
 {% block content %}
     <div class="content small-content">
         <h1>Methods</h1>
-        <div class="rows">
+        <div class="rows rows-slim">
             {% for method in methods %}
-                <a href="{{method.id}}" class="btn btn-primary">{{method.name}}</a>
+                <div class="row-edit-delete">
+                    <div class="row-content">
+                        <p id="method{{ method.id }}Title">{{ method.name }}</p>
+                        <input hidden type="text" name="method{{ method.id }}Name" id="method{{ method.id }}Input" value="{{ method.name }}">
+                    </div>
+                    <div class="row-delete">
+                        <button id="method{{ method.id }}Delete" onclick="onClick()" class="btn btn-stealth"><i class="bi bi-x-circle lg" title="Delete Payment Method"></i></button>
+                        <button hidden id="method{{ method.id }}Cancel" onclick="clickCancel('{{method.id}}')" class="btn btn-stealth"><i class="bi bi-arrow-left lg" title="Cancel"></i></button>
+                    </div>
+                    <div class="row-edit">
+                        <button id="method{{ method.id }}Edit" onclick="clickEdit('{{method.id}}')" class="btn btn-stealth" title="Edit Payment Method"><i class="bi bi-pencil-square lg"></i></button>
+                        <button hidden id="method{{ method.id }}Submit" onclick="clickSubmit('{{method.id}}')" class="btn btn-stealth"><i class="bi bi-check-circle lg" title="Submit"></i></button>
+                    </div>
+                </div>
             {% endfor %}
             <a href="new" class="btn btn-primary"><i class="bi bi-plus-lg icon-left"></i>Add New</a>
         </div>
+        <script type="text/javascript" src="{% static 'tracker/methods.js' %}"></script>
     </div>
 {% endblock %}
