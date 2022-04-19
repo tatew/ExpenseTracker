@@ -338,7 +338,7 @@ i.xl {
 
 .row-edit-delete {
     display: grid;
-    grid-template-columns: 4fr 1fr 1fr;
+    grid-template-columns: 1fr 4fr 1fr;
     grid-template-rows: 1fr;
 }
 
@@ -350,6 +350,10 @@ i.xl {
 .row-edit-delete .row-edit, .row-edit-delete .row-delete{
     align-self: center;
     justify-self: center;
+}
+
+#addNewMethodRow {
+    display: none;
 }
 
 

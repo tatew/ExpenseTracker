@@ -4,7 +4,7 @@ from tracker.models import Method
 from ..services import dataService
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from ..forms import TransactionForm, PresetTransactionForm, ChartFilterForm
+from ..forms import TransactionForm, PresetTransactionForm, ChartFilterForm, MethodForm
 from ..utilities import expenseTrackerUtilities
 import decimal
 
@@ -239,8 +239,8 @@ def buildPresetTransactionsContext(user):
 
     return context
 
-def buildCreatePresetTransactionFormContext(prevUrl):
-    form = PresetTransactionForm(initial={'prevUrl': prevUrl, 'isExpense': True})
+def buildCreatePresetTransactionFormContext(prevUrl, user):
+    form = PresetTransactionForm(initial={'prevUrl': prevUrl, 'isExpense': True, 'user': user})
 
     context = {
         'form': form,
@@ -278,13 +278,4 @@ def buildMethodsContext(user):
         'user': user.username
     }
     
-    return context
-
-def buildMethodContext(user, id):
-    method = dataService.getMethodById(id)
-
-    context = {
-        'method': method
-    }
-
     return context

@@ -1,8 +1,9 @@
+from cmath import log
 from datetime import datetime, date
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import TransactionForm, PresetTransactionForm, ImportForm, ChartFilterForm
+from .forms import TransactionForm, PresetTransactionForm, ImportForm, ChartFilterForm, MethodForm
 from .services.importService import importTransactionsCsv
 import csv
 import io
@@ -271,7 +272,6 @@ def presetTransactions(request):
 
 @login_required
 def createPreset(request):
-
     if (request.method == 'POST'):
         form = PresetTransactionForm(request.POST)
         if (form.is_valid()):
@@ -283,7 +283,7 @@ def createPreset(request):
             return render(request, 'tracker/createPresetTransaction.html', context)
     else:
         prevUrl = 'presetTransactions'
-        context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl)
+        context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl, request.user)
         return render(request, 'tracker/createPresetTransaction.html', context)
 
 @login_required
@@ -298,11 +298,26 @@ def methods(request):
 
     return render(request, 'tracker/methods.html', context)
 
-def method(request, id):
-    method = dataService.getMethodById(id)
-    if (method.user != request.user):
-        raise Http404
+@login_required
+def createMethod(request):
+    if (request.method == 'POST'):
+        form = MethodForm(request.POST)
+        if (form.is_valid()):
+            print(form.cleaned_data)
+            dataService.createMethodFromForm(form, request.user)
+            return redirect('methods')
 
-    context = expenseTrackerBuilder.buildMethodContext(request.user, id)
+@login_required
+def updateMethod(request, id):
+    if (request.method == 'POST'):
+        form = MethodForm(request.POST)
+        if (form.is_valid()):
+            print(form.cleaned_data)
+            dataService.updateMethodFromForm(form, request.user, id)
+            return redirect('methods')
 
-    return render(request, 'tracker/method.html', context)
+@login_required
+def toggleActive(request, id):
+    if (request.method == 'POST'):
+        dataService.methodToggleActive(request.user, id)
+        return redirect('methods')

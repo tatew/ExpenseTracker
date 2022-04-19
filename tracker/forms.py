@@ -27,7 +27,7 @@ class TransactionForm(ModelForm):
         self.fields['amount'].widget.attrs['min'] = 0
         initial = kwargs.get('initial')
         if (initial != None):
-            methods = Method.objects.filter(user=initial['user'])
+            methods = Method.objects.filter(user=initial['user'], active=True)
             self.fields['method'].queryset = methods
 
     class Meta:
@@ -56,8 +56,12 @@ class PresetTransactionForm(ModelForm):
     }
 
     def __init__(self, *args, **kwargs):
-        super(PresetTransactionForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs['min'] = 0
+        initial = kwargs.get('initial')
+        if (initial != None):
+            methods = Method.objects.filter(user=initial['user'], active=True)
+            self.fields['method'].queryset = methods
 
     prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
 
@@ -100,3 +104,19 @@ class ChartFilterForm(forms.Form):
     endDate = forms.DateField(widget = widgets.DateInput(attrs={'type': 'date'}), label='End Date')
     preset = forms.CharField(widget = forms.HiddenInput(), required=False)
 
+class MethodForm(ModelForm):
+    formId = 'methodForm'
+    action = '/methods/new/'
+    title = 'Add Method'
+    formWrapperClass = 'form-wrapper'
+
+    iconClasses = {
+        'name': 'bi bi-quote icon-left'
+    }
+
+    prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
+
+    class Meta:
+        model = Method
+        fields = '__all__'
+        exclude = ('user',)

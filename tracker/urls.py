@@ -18,6 +18,8 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('settings/', views.settings, name='settings'),
     path('methods/', views.methods, name='methods'),
-    path('methods/<int:id>', views.method, name='transaction'),
+    path('methods/new/', views.createMethod, name='createMethod'),
+    path('methods/<int:id>/update', views.updateMethod, name='updateMethod'),
+    path('methods/<int:id>/toggleActive', views.toggleActive, name='toggleActive'),
     path('', views.index, name="index")
 ]
