@@ -1,5 +1,5 @@
 from cmath import log
-from datetime import datetime, date
+from datetime import datetime
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -81,24 +81,7 @@ def listTransactions(request):
     if (request.method == "POST"):
         numToShow = int(request.POST['prevNumToShow']) + 10
 
-    transactions = dataService.getLastNTransactions(request.user, numToShow + 1)
-    
-    hideShowMore = False
-    if (transactions.count() < numToShow + 1):
-        hideShowMore = True
-
-    transactions = transactions[:numToShow]
-
-    for transaction in transactions:
-        transaction.dateStr = date.strftime(transaction.date, "%m/%d/%Y")
-        amountStr = f"{transaction.amount:,}"
-        transaction.amountStr = f"${amountStr:>12}"
-
-    context = {
-        'transactions': transactions,
-        'hideShowMore': hideShowMore,
-        'prevNumToShow': numToShow
-    }
+    context = expenseTrackerBuilder.buildListTransactionsContext(request.user, numToShow)
 
     return render(request, "tracker/listTransactions.html", context)
 

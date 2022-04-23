@@ -1,8 +1,6 @@
-from operator import methodcaller
-import re
 from tracker.models import Method
 from ..services import dataService
-from datetime import datetime
+from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from ..forms import TransactionForm, PresetTransactionForm, ChartFilterForm, MethodForm
 from ..utilities import expenseTrackerUtilities
@@ -278,4 +276,32 @@ def buildMethodsContext(user):
         'user': user.username
     }
     
+    return context
+
+def buildListTransactionsContext(user, numToShow):
+
+    transactions = dataService.getLastNTransactions(user, numToShow + 1)
+    
+    hideShowMore = False
+    if (transactions.count() < numToShow + 1):
+        hideShowMore = True
+
+    transactions = transactions[:numToShow]
+
+    for transaction in transactions:
+        transaction.dateStr = date.strftime(transaction.date, "%m/%d/%Y")
+        amountStr = f"{transaction.amount:,}"
+        transaction.amountStr = f"${amountStr:>12}"
+
+    categories = dataService.getCategories()
+    methods = dataService.getMethodsForUser(user)
+
+    context = {
+        'transactions': transactions,
+        'hideShowMore': hideShowMore,
+        'prevNumToShow': numToShow,
+        'methods': methods,
+        'categories': categories
+    }
+
     return context

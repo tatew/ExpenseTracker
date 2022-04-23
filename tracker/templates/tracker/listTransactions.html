@@ -17,6 +17,26 @@
                     <th>Category</th>
                     <th>Amount</th>
                 </thead>
+                <tr>
+                    <td><input type="date" name="date" id="listTransactionsFilterDate"></td>
+                    <td><input type="text" name="vendor" id="listTransactionsFilterVendor"></td>
+                    <td><input type="text" name="reason" id="listTransactionsFilterReason"></td>
+                    <td>
+                        <select name="method" id="listTransactionsFilterMethod">
+                            {% for method in methods %}
+                                <option value="{{ method.id }}" label="{{ method.name }}"></option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select name="category" id="listTransactionsFilterCategory">
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" label="{{ category.name }}"></option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td></td>
+                </te>
                 {% for transaction in transactions %}
                     <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=transactions'">
                         <td>{{ transaction.dateStr }}</td>
