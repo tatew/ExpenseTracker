@@ -12,11 +12,11 @@
         </div>
         <div class="rows">
             {% for preset in presets %}
-                <a href="/{% if preset.isExpense %}logExpense{% else %}logIncome{% endif %}?prevUrl=presetTransactions&presetTransactionId={{preset.id}}" class="btn btn-primary row">
+                <a href="/{% if preset.isExpense %}logExpense{% else %}logIncome{% endif %}?prevUrl=presetTransactions&presetTransactionId={{preset.id}}" class="btn btn-primary row-icon-subtitle">
                     <div class="row-icon">
                         <i class="bi {% if preset.isExpense %} bi-graph-down-arrow {% else %} bi-graph-up-arrow {% endif %} icon-left"></i>
                     </div>
-                    <div class="row-icon-subtitle">
+                    <div class="row-subtitle">
                         {% if preset.isExpense %} Expense {% else %} Income {% endif %}
                     </div>
                     <div class="row-content">

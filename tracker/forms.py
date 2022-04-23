@@ -1,6 +1,6 @@
 from cProfile import label
 from importlib.metadata import requires
-from .models import Transaction, TransactionPreset
+from .models import Transaction, TransactionPreset, Method
 from django import forms
 from django.forms import ModelForm, widgets
 from .validators import validate_file_extension_csv
@@ -23,16 +23,20 @@ class TransactionForm(ModelForm):
     prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
 
     def __init__(self, *args, **kwargs):
-        super(TransactionForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs['min'] = 0
+        initial = kwargs.get('initial')
+        if (initial != None):
+            methods = Method.objects.filter(user=initial['user'], active=True)
+            self.fields['method'].queryset = methods
 
     class Meta:
         model = Transaction
         fields = '__all__'
-        exclude = ('user',)
         widgets = {
             'date': widgets.DateInput(attrs={'type': 'date'}),
-            'amount': widgets.NumberInput(attrs={'inputmode': 'decimal'})
+            'amount': widgets.NumberInput(attrs={'inputmode': 'decimal'}),
+            'user': widgets.HiddenInput()
         }
 
 class PresetTransactionForm(ModelForm):
@@ -52,8 +56,12 @@ class PresetTransactionForm(ModelForm):
     }
 
     def __init__(self, *args, **kwargs):
-        super(PresetTransactionForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs['min'] = 0
+        initial = kwargs.get('initial')
+        if (initial != None):
+            methods = Method.objects.filter(user=initial['user'], active=True)
+            self.fields['method'].queryset = methods
 
     prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
 
@@ -96,3 +104,19 @@ class ChartFilterForm(forms.Form):
     endDate = forms.DateField(widget = widgets.DateInput(attrs={'type': 'date'}), label='End Date')
     preset = forms.CharField(widget = forms.HiddenInput(), required=False)
 
+class MethodForm(ModelForm):
+    formId = 'methodForm'
+    action = '/methods/new/'
+    title = 'Add Method'
+    formWrapperClass = 'form-wrapper'
+
+    iconClasses = {
+        'name': 'bi bi-quote icon-left'
+    }
+
+    prevUrl = forms.CharField(widget = forms.HiddenInput(), required = False)
+
+    class Meta:
+        model = Method
+        fields = '__all__'
+        exclude = ('user',)

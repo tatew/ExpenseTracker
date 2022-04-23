@@ -1,7 +1,10 @@
+from operator import methodcaller
+import re
+from tracker.models import Method
 from ..services import dataService
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from ..forms import TransactionForm, PresetTransactionForm, ChartFilterForm
+from ..forms import TransactionForm, PresetTransactionForm, ChartFilterForm, MethodForm
 from ..utilities import expenseTrackerUtilities
 import decimal
 
@@ -35,9 +38,9 @@ def buildLogExpenseFormErrorsContext(form):
 
     return context
 
-def buildLogExpenseFormContext(prevUrl, preset):
+def buildLogExpenseFormContext(prevUrl, preset, user):
     if (preset == None):
-        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now(), 'user': user})
     else:
         form = TransactionForm(initial={
             'prevUrl': prevUrl,
@@ -47,6 +50,7 @@ def buildLogExpenseFormContext(prevUrl, preset):
             'method': preset.method,
             'category': preset.category,
             'amount': preset.amount,
+            'user': user
         })
 
     form.formId = 'expenseForm'
@@ -76,9 +80,9 @@ def buildLogIncomeErrorsContext(user, form):
     
     return context
 
-def buildLogIncomeFormContext(prevUrl, preset):
+def buildLogIncomeFormContext(prevUrl, preset, user):
     if (preset == None):
-        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now()})
+        form = TransactionForm(initial={'prevUrl': prevUrl, 'date': datetime.now(), 'user': user})
     else:
         form = TransactionForm(initial={
             'prevUrl': prevUrl,
@@ -88,6 +92,7 @@ def buildLogIncomeFormContext(prevUrl, preset):
             'method': preset.method,
             'category': preset.category,
             'amount': preset.amount,
+            'user': user
         })
 
     form.formId = 'incomeForm'
@@ -234,8 +239,8 @@ def buildPresetTransactionsContext(user):
 
     return context
 
-def buildCreatePresetTransactionFormContext(prevUrl):
-    form = PresetTransactionForm(initial={'prevUrl': prevUrl, 'isExpense': True})
+def buildCreatePresetTransactionFormContext(prevUrl, user):
+    form = PresetTransactionForm(initial={'prevUrl': prevUrl, 'isExpense': True, 'user': user})
 
     context = {
         'form': form,
@@ -260,4 +265,17 @@ def buildCreatePresetTransactionSuccessContext(user, form):
         'preset': preset
     }
 
+    return context
+
+def buildSettingsHomeContext(user):
+    return {}
+
+def buildMethodsContext(user):
+    methods = dataService.getMethodsForUser(user)
+
+    context = {
+        'methods': methods,
+        'user': user.username
+    }
+    
     return context

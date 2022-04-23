@@ -65,9 +65,27 @@ tr.clickable:hover {
     margin-right: 0.5rem;
 }
 
+i.xs {
+    font-size: 50%;
+}
+
+i.sm {
+    font-size: 75%;
+}
+
+i.md {
+    font-size: 125%;
+}
+
+i.lg {
+    font-size: 150%;
+}
+
+i.xl {
+    font-size: 200%;
+}
+
 .btn {
-    border-width: 0.1rem;
-    border-style: solid;
     border-radius: 0.3rem;
     text-decoration: none;
     padding: 0.5rem;
@@ -78,13 +96,29 @@ tr.clickable:hover {
 }
 
 .btn-primary {
+    border-width: 0.1rem;
+    border-style: solid;
     background-color: #0a3622;
     border-color: white;
     color: white;
 }
 
 .btn-primary:hover, .btn-active {
+    border-width: 0.1rem;
+    border-style: solid;
     border-color: white;
+    color: #198754;
+    background-color: white;
+}
+
+.btn-stealth {
+    border: none;
+    background-color: #0a3622;;
+    color: white;
+}
+
+.btn-stealth:hover {
+    border: none;
     color: #198754;
     background-color: white;
 }
@@ -269,31 +303,60 @@ tr.clickable:hover {
     gap: 1rem;
 }
 
-.row {
+.rows > div, .rows > a {
+    padding: 1rem
+}
+
+.rows-slim div {
+    padding: 0
+}
+
+.row-icon-subtitle {
     display: grid;
     grid-template-columns: 1fr 3fr;
     grid-template-rows: 1fr 1fr;
-    padding: 1rem;
 }
 
-.row .row-icon {
+.row-icon-subtitle .row-icon {
     grid-column: 1 / span 1;
     grid-row: 1 / span 1;
     font-size: 200%;
     align-self: center;
 }
 
-.row .row-icon-subtitle {
+.row-icon-subtitle .row-subtitle {
     grid-column: 1 / span 1;
     grid-row: 2 / span 1;
     align-self: center;
 }
 
-.row .row-content {
+.row-icon-subtitle .row-content {
     grid-column: 2 / span 1;
     grid-row: 1 / span 2;
     align-self: center;
 }
+
+.row-edit-delete {
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.row-edit-delete .row-content {
+    align-self: center;
+    justify-self: left;
+}
+
+.row-edit-delete .row-edit, .row-edit-delete .row-delete{
+    align-self: center;
+    justify-self: center;
+}
+
+#addNewMethodRow {
+    display: none;
+}
+
+
 
 .table {
     width: 100% !important;

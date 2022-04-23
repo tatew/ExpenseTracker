@@ -1,8 +1,9 @@
+from cmath import log
 from datetime import datetime, date
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import TransactionForm, PresetTransactionForm, ImportForm, ChartFilterForm
+from .forms import TransactionForm, PresetTransactionForm, ImportForm, ChartFilterForm, MethodForm
 from .services.importService import importTransactionsCsv
 import csv
 import io
@@ -47,9 +48,9 @@ def logExpense(request):
         prevUrl = request.GET.get('prevUrl', 'home')
         if (presetId != ''):
             presetTransaction = dataService.getTransactionPresetById(presetId)
-            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, presetTransaction)
+            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, presetTransaction, request.user)
         else:
-            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, None)
+            context = expenseTrackerBuilder.buildLogExpenseFormContext(prevUrl, None, request.user)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
@@ -69,9 +70,9 @@ def logIncome(request):
         prevUrl = request.GET.get('prevUrl', 'home')
         if (presetId != ''):
             presetTransaction = dataService.getTransactionPresetById(presetId)
-            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, presetTransaction)
+            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, presetTransaction, request.user)
         else:
-            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, None)
+            context = expenseTrackerBuilder.buildLogIncomeFormContext(prevUrl, None, request.user)
         return render(request, "tracker/fullPageForm.html", context)
 
 @login_required
@@ -271,7 +272,6 @@ def presetTransactions(request):
 
 @login_required
 def createPreset(request):
-
     if (request.method == 'POST'):
         form = PresetTransactionForm(request.POST)
         if (form.is_valid()):
@@ -283,5 +283,41 @@ def createPreset(request):
             return render(request, 'tracker/createPresetTransaction.html', context)
     else:
         prevUrl = 'presetTransactions'
-        context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl)
+        context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl, request.user)
         return render(request, 'tracker/createPresetTransaction.html', context)
+
+@login_required
+def settings(request):
+    context = expenseTrackerBuilder.buildSettingsHomeContext(request.user)
+
+    return render(request, 'tracker/settingsHome.html', context)
+
+@login_required
+def methods(request):
+    context = expenseTrackerBuilder.buildMethodsContext(request.user)
+
+    return render(request, 'tracker/methods.html', context)
+
+@login_required
+def createMethod(request):
+    if (request.method == 'POST'):
+        form = MethodForm(request.POST)
+        if (form.is_valid()):
+            print(form.cleaned_data)
+            dataService.createMethodFromForm(form, request.user)
+            return redirect('methods')
+
+@login_required
+def updateMethod(request, id):
+    if (request.method == 'POST'):
+        form = MethodForm(request.POST)
+        if (form.is_valid()):
+            print(form.cleaned_data)
+            dataService.updateMethodFromForm(form, request.user, id)
+            return redirect('methods')
+
+@login_required
+def toggleActive(request, id):
+    if (request.method == 'POST'):
+        dataService.methodToggleActive(request.user, id)
+        return redirect('methods')

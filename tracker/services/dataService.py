@@ -57,6 +57,10 @@ def getCategories():
     return Category.objects.all()
 
 def createExpenseFromForm(form, user):
+    method = getMethodById(form.cleaned_data['method'].id)
+    if (not method.active):
+        return 
+
     expense = Transaction(
         date=form.cleaned_data['date'],
         reason=form.cleaned_data['reason'],
@@ -70,6 +74,10 @@ def createExpenseFromForm(form, user):
     return expense
 
 def createIncomeFromForm(form, user):
+    method = getMethodById(form.cleaned_data['method'].id)
+    if (not method.active):
+        return 
+    
     income = Transaction(
         date=form.cleaned_data['date'],
         reason=form.cleaned_data['reason'],
@@ -83,6 +91,10 @@ def createIncomeFromForm(form, user):
     return income
 
 def createPresetTransactionFromForm(form, user):
+    method = getMethodById(form.cleaned_data['method'].id)
+    if (not method.active):
+        return 
+
     preset = TransactionPreset(
         name=form.cleaned_data['name'],
         isExpense=form.cleaned_data['isExpense'],
@@ -108,3 +120,39 @@ def getTransactionPresetsForUser(user):
 
 def getTransactionPresetById(id):
     return TransactionPreset.objects.get(id=id)
+
+def getMethodsForUser(user):
+    return Method.objects.filter(user=user).order_by('name')
+
+def getActiveMethodsForUser(user):
+    return Method.objects.filter(user=user, active=True).order_by('name')
+
+def getMethodById(id):
+    return Method.objects.get(id=id)
+
+def createMethodFromForm(form, user):
+    method = Method(
+        name=form.cleaned_data['name'],
+        user=user
+    )
+
+    method.save()
+    return method
+
+def updateMethodFromForm(form, user, id):
+    method = getMethodById(id)
+    if (method.user != user):
+       return 
+    else:
+        method.name = form.cleaned_data['name']
+        method.save()
+        return method
+
+def methodToggleActive(user, id):
+    method = getMethodById(id)
+    if (method.user != user):
+       return 
+    else:
+        method.active = not method.active
+        method.save()
+        return method

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="content small-content">
+        <h1>Methods</h1>
+        <div class="rows rows-slim" id="methodRows">
+            {% for method in methods %}
+                <div class="row-edit-delete">
+                    <div class="row-delete">
+                        <form id="method{{ method.id }}ToggleActiveForm" action="{{ method.id }}/toggleActive" method="POST">
+                            {% csrf_token %}
+                            <button id="method{{ method.id }}ToggleActive" type="submit" class="btn btn-stealth"><i class="bi {% if method.active %} bi-toggle-on {% else %} bi-toggle-off {% endif %} lg" title="{% if method.active %} Deactive Method {% else %} Activate Method {% endif %}"></i></button>
+                        </form>
+                        <button hidden id="method{{ method.id }}Cancel" onclick="clickCancel('{{method.id}}')" class="btn btn-stealth"><i class="bi bi-arrow-left lg" title="Cancel"></i></button>
+                    </div>
+                    <div class="row-content">
+                        <p id="method{{ method.id }}Title">{{ method.name }}</p>
+                        <form id="method{{ method.id }}Form" action="{{ method.id }}/update" method="POST">
+                            {% csrf_token %}
+                            <input hidden type="text" name="name" id="method{{ method.id }}Input" value="{{ method.name }}">
+                        </form>
+                    </div>
+                    <div class="row-edit">
+                        <button id="method{{ method.id }}Edit" onclick="clickEdit('{{method.id}}')" class="btn btn-stealth" title="Edit Payment Method"><i class="bi bi-pencil-square lg"></i></button>
+                        <button hidden id="method{{ method.id }}Submit" form="method{{ method.id }}Form" type="submit" class="btn btn-stealth"><i class="bi bi-check-circle lg" title="Submit"></i></button>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="row-edit-delete" id="addNewMethodRow">
+                <div class="row-delete">
+                    <button onclick="clickNewMethodCancel()" class="btn btn-stealth"><i class="bi bi-arrow-left lg" title="Cancel"></i></button>
+                </div>
+                <div class="row-content">
+                    <form id="newMethodForm" action="new/" method="POST">
+                        {% csrf_token %}
+                        <input type="text" name="name" id="name">
+                    </form>
+                </div>
+                <div class="row-edit">
+                    <button form="newMethodForm" type="submit" class="btn btn-stealth"><i class="bi bi-check-circle lg" title="Submit"></i></button>
+                </div>
+            </div>
+            <button id="addMethodButton" onClick="clickNew()" class="btn btn-primary"><i class="bi bi-plus-lg icon-left"></i>Add New</button>
+        </div>
+        <script type="text/javascript" src="{% static 'tracker/methods.js' %}"></script>
+    </div>
+    <div class="content small-content">
+        <h3>About Method Activation</h3>
+        <p>Payment methods can not be deleted because there could be transactions made with that method. If you don't want to be able to log transactions with a given method, you can deactive it. Deactivated transactions can be reactivated at any time.</p>
+    </div>
+{% endblock %}
