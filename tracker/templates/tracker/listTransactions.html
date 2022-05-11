@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load filters %}
+{% load static %}
 
 {% block nav %}
 {% endblock %}
@@ -17,26 +18,32 @@
                     <th>Category</th>
                     <th>Amount</th>
                 </thead>
-                <tr>
-                    <td><input type="date" name="date" id="listTransactionsFilterDate"></td>
-                    <td><input type="text" name="vendor" id="listTransactionsFilterVendor"></td>
-                    <td><input type="text" name="reason" id="listTransactionsFilterReason"></td>
-                    <td>
-                        <select name="method" id="listTransactionsFilterMethod">
-                            {% for method in methods %}
-                                <option value="{{ method.id }}" label="{{ method.name }}"></option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                    <td>
-                        <select name="category" id="listTransactionsFilterCategory">
-                            {% for category in categories %}
-                                <option value="{{ category.id }}" label="{{ category.name }}"></option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                    <td></td>
-                </te>
+                <form method="post" id="listTransactionsForm" action="{% url 'transactions' %}">
+                    {% csrf_token %}
+                    <tr>
+                        <td><input type="date" name="date" id="listTransactionsFilterDate"><button type="submit" form="listTransactionsForm" class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td><input type="text" oninput="onVendorChange(event)" name="vendor" id="listTransactionsFilterVendor"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td><input type="text" name="reason" id="listTransactionsFilterReason"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td>
+                            <select name="method" id="listTransactionsFilterMethod">
+                                {% for method in methods %}
+                                    <option value="{{ method.id }}" label="{{ method.name }}"></option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button>
+                        </td>
+                        <td>
+                            <select name="category" id="listTransactionsFilterCategory">
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" label="{{ category.name }}"></option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button>
+                        </td>
+                        <td></td>
+                    </tr>
+                </form>
+                
                 {% for transaction in transactions %}
                     <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=transactions'">
                         <td>{{ transaction.dateStr }}</td>
@@ -51,11 +58,8 @@
         </div>
         <p>Showing {{ transactions.count }} transactions</p>
         {% if not hideShowMore %}
-            <form method="post" action="{% url 'transactions' %}">
-                {% csrf_token %}
-                <input hidden name="prevNumToShow" type="number" value="{{ prevNumToShow }}">
-                <button type="submit" class="btn btn-primary">Show More<i class="bi bi-plus-lg icon-right"></i></button>
-            </form>
+                <a href="?show={{ nextNumToShow }}" class="btn btn-primary">Show More<i class="bi bi-plus-lg icon-right"></i></a>
         {% endif %}
+        <script type="text/javascript" src="{% static 'tracker/listTransactions.js' %}"></script>
     </div>
 {% endblock %}

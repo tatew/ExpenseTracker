@@ -77,10 +77,9 @@ def logIncome(request):
 
 @login_required
 def listTransactions(request):
-    numToShow = 10
-    if (request.method == "POST"):
-        numToShow = int(request.POST['prevNumToShow']) + 10
+    
 
+    numToShow = int(request.GET.get('show', '10'))
     context = expenseTrackerBuilder.buildListTransactionsContext(request.user, numToShow)
 
     return render(request, "tracker/listTransactions.html", context)

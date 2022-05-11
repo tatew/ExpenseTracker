@@ -299,7 +299,7 @@ def buildListTransactionsContext(user, numToShow):
     context = {
         'transactions': transactions,
         'hideShowMore': hideShowMore,
-        'prevNumToShow': numToShow,
+        'nextNumToShow': numToShow + 10,
         'methods': methods,
         'categories': categories
     }
