@@ -156,3 +156,6 @@ def methodToggleActive(user, id):
         method.active = not method.active
         method.save()
         return method
+
+def getTransactionsForFilter(user, transactionFilter):
+    return Transaction.objects.filter(user=user, vendor__icontains=transactionFilter['vendor'])

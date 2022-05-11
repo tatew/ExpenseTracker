@@ -21,9 +21,9 @@
                 <form method="post" id="listTransactionsForm" action="{% url 'transactions' %}">
                     {% csrf_token %}
                     <tr>
-                        <td><input type="date" name="date" id="listTransactionsFilterDate"><button type="submit" form="listTransactionsForm" class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
-                        <td><input type="text" oninput="onVendorChange(event)" name="vendor" id="listTransactionsFilterVendor"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
-                        <td><input type="text" name="reason" id="listTransactionsFilterReason"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td><input type="date" value="{{transactionFilter.date}}" name="date" id="listTransactionsFilterDate"><button type="submit" form="listTransactionsForm" class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td><input type="text" value="{{transactionFilter.vendor}}" name="vendor" id="listTransactionsFilterVendor"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td><input type="text" value="{{transactionFilter.reason}}" name="reason" id="listTransactionsFilterReason"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
                         <td>
                             <select name="method" id="listTransactionsFilterMethod">
                                 {% for method in methods %}

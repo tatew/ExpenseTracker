@@ -278,14 +278,15 @@ def buildMethodsContext(user):
     
     return context
 
-def buildListTransactionsContext(user, numToShow):
-
-    transactions = dataService.getLastNTransactions(user, numToShow + 1)
-    
+def buildListTransactionsContext(user, numToShow, transactionFilter):
     hideShowMore = False
-    if (transactions.count() < numToShow + 1):
-        hideShowMore = True
 
+    if (transactionFilter == None):
+        transactions = dataService.getLastNTransactions(user, numToShow + 1)
+    else:
+        transactions = dataService.getTransactionsForFilter(user, transactionFilter)
+
+    hideShowMore = (transactions.count() < numToShow + 1)
     transactions = transactions[:numToShow]
 
     for transaction in transactions:
@@ -301,7 +302,8 @@ def buildListTransactionsContext(user, numToShow):
         'hideShowMore': hideShowMore,
         'nextNumToShow': numToShow + 10,
         'methods': methods,
-        'categories': categories
+        'categories': categories,
+        'transactionFilter': transactionFilter
     }
 
     return context

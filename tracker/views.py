@@ -1,5 +1,6 @@
 from cmath import log
 from datetime import datetime
+import re
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -77,10 +78,18 @@ def logIncome(request):
 
 @login_required
 def listTransactions(request):
-    
+    transactionFilter = None
+    if (request.method == "POST"):
+        transactionFilter = {
+            'date': request.POST['date'],
+            'vendor': request.POST['vendor'],
+            'reason': request.POST['reason'],
+            'category': request.POST['category'],
+            'method': request.POST['method']
+        }
 
     numToShow = int(request.GET.get('show', '10'))
-    context = expenseTrackerBuilder.buildListTransactionsContext(request.user, numToShow)
+    context = expenseTrackerBuilder.buildListTransactionsContext(request.user, numToShow, transactionFilter)
 
     return render(request, "tracker/listTransactions.html", context)
 
