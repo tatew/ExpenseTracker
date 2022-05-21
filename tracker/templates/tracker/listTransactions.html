@@ -10,15 +10,15 @@
         <h1 class="page-title">Transactions</h1>
         <div class="table">
             <table>
-                <thead>
-                    <th>Date</th>
-                    <th>Vendor</th>
-                    <th>Reason</th>
-                    <th>Method</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                </thead>
                 <form method="post" id="listTransactionsForm" action="{% url 'transactions' %}">
+                    <thead>
+                        <th>Date</th>
+                        <th>Vendor</th>
+                        <th>Reason</th>
+                        <th>Method</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                    </thead>
                     {% csrf_token %}
                     <tr>
                         <td><input type="date" value="{{transactionFilter.date}}" name="date" id="listTransactionsFilterDate"><button type="submit" form="listTransactionsForm" class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
