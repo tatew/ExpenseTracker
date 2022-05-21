@@ -300,10 +300,10 @@ def buildListTransactionsContext(user, numToShow, transactionFilter):
     context = {
         'transactions': transactions,
         'hideShowMore': hideShowMore,
-        'nextNumToShow': numToShow + 10,
+        'numToShow': numToShow,
         'methods': methods,
         'categories': categories,
-        'transactionFilter': transactionFilter
+        'transactionFilter': transactionFilter,
+        'numTransactions': len(transactions)
     }
-
     return context

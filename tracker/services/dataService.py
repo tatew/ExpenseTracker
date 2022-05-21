@@ -158,4 +158,38 @@ def methodToggleActive(user, id):
         return method
 
 def getTransactionsForFilter(user, transactionFilter):
-    return Transaction.objects.filter(user=user, vendor__icontains=transactionFilter['vendor'])
+
+    transactions = Transaction.objects.filter(user=user)
+    transactions = filterByDate(transactions, transactionFilter['date'])
+    transactions = filterByVendor(transactions, transactionFilter['vendor'])
+    transactions = filterByReason(transactions, transactionFilter['reason'])
+    transactions = filterByMethod(transactions, transactionFilter['method'])
+    transactions = filterByCategory(transactions, transactionFilter['category'])
+
+    return transactions.order_by('-date', '-amount')
+
+def filterByDate(transactions, date):
+    if (date != ""):
+        return transactions.filter(date=date)
+    else: 
+        return transactions
+
+def filterByVendor(transactions, vendor):
+    return transactions.filter(vendor__icontains=vendor)
+
+def filterByReason(transactions, reason):
+    return transactions.filter(reason__icontains=reason)
+
+def filterByMethod(transactions, method):
+    if (method != ''):
+        return transactions.filter(method=method)
+    else: 
+        return transactions
+
+def filterByCategory(transactions, category):
+    if (category != ''):
+        return transactions.filter(category=category)
+    else: 
+        return transactions
+
+

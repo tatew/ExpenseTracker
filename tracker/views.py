@@ -79,18 +79,27 @@ def logIncome(request):
 @login_required
 def listTransactions(request):
     transactionFilter = None
+    numToShow = 10
     if (request.method == "POST"):
+        category = request.POST['category']
+        method = request.POST['method']
+
+        if (category != ''):
+            category = int(category)
+
+        if (method != ''):
+            method = int(method)
+
         transactionFilter = {
             'date': request.POST['date'],
             'vendor': request.POST['vendor'],
             'reason': request.POST['reason'],
-            'category': request.POST['category'],
-            'method': request.POST['method']
+            'category': category,
+            'method': method
         }
+        numToShow = int(request.POST['numToShow'])
 
-    numToShow = int(request.GET.get('show', '10'))
     context = expenseTrackerBuilder.buildListTransactionsContext(request.user, numToShow, transactionFilter)
-
     return render(request, "tracker/listTransactions.html", context)
 
 @login_required

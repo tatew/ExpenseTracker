@@ -26,39 +26,59 @@
                         <td><input type="text" value="{{transactionFilter.reason}}" name="reason" id="listTransactionsFilterReason"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
                         <td>
                             <select name="method" id="listTransactionsFilterMethod">
+                                <option value="">-----</option>
                                 {% for method in methods %}
-                                    <option value="{{ method.id }}" label="{{ method.name }}"></option>
+                                    {% if transactionFilter.method == method.id %}
+                                        <option selected value="{{ method.id }}" label="{{ method.name }}"></option>
+                                    {% else %}
+                                        <option value="{{ method.id }}" label="{{ method.name }}"></option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                             <button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button>
                         </td>
                         <td>
                             <select name="category" id="listTransactionsFilterCategory">
+                                <option value="">-----</option>
                                 {% for category in categories %}
-                                    <option value="{{ category.id }}" label="{{ category.name }}"></option>
+                                    {% if transactionFilter.category == category.id %}
+                                        <option selected value="{{ category.id }}" label="{{ category.name }}"></option>
+                                    {% else %}
+                                        <option value="{{ category.id }}" label="{{ category.name }}"></option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                             <button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button>
                         </td>
                         <td></td>
                     </tr>
+                    <input hidden name="numToShow" type="number" value="{{ numToShow }}">
                 </form>
-                
-                {% for transaction in transactions %}
-                    <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=transactions'">
-                        <td>{{ transaction.dateStr }}</td>
-                        <td>{{ transaction.vendor }}</td>
-                        <td>{{ transaction.reason }}</td>
-                        <td>{{ transaction.method }}</td>
-                        <td>{{ transaction.category }}</td>
-                        <td class="accounting">{{ transaction.amountStr|spacify }}</td>
+                {% if numTransactions == 0 %}
+                    <tr>
+                        <td id="noTxnsFound" colspan="6">No Transactions Found</td>
                     </tr>
-                {% endfor %}
+                {% else %}
+                    {% for transaction in transactions %}
+                        <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=transactions'">
+                            <td>{{ transaction.dateStr }}</td>
+                            <td>{{ transaction.vendor }}</td>
+                            <td>{{ transaction.reason }}</td>
+                            <td>{{ transaction.method }}</td>
+                            <td>{{ transaction.category }}</td>
+                            <td class="accounting">{{ transaction.amountStr|spacify }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
             </table>
         </div>
-        <p>Showing {{ transactions.count }} transactions</p>
+        {% if numTransactions == 1 %}
+            <p>Showing {{ transactions.count }} transaction</p>
+        {% elif numTransactions > 1%}
+            <p>Showing {{ transactions.count }} transactions</p>
+        {% endif %}
         {% if not hideShowMore %}
-                <a href="?show={{ nextNumToShow }}" class="btn btn-primary">Show More<i class="bi bi-plus-lg icon-right"></i></a>
+                <button onclick="clickedShowMore()" class="btn btn-primary">Show More<i class="bi bi-plus-lg icon-right"></i></button>
         {% endif %}
         <script type="text/javascript" src="{% static 'tracker/listTransactions.js' %}"></script>
     </div>
