@@ -1,5 +1,6 @@
 from cmath import log
-from datetime import datetime, date
+from datetime import datetime
+import re
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -77,29 +78,28 @@ def logIncome(request):
 
 @login_required
 def listTransactions(request):
+    transactionFilter = None
     numToShow = 10
     if (request.method == "POST"):
-        numToShow = int(request.POST['prevNumToShow']) + 10
+        category = request.POST['category']
+        method = request.POST['method']
 
-    transactions = dataService.getLastNTransactions(request.user, numToShow + 1)
-    
-    hideShowMore = False
-    if (transactions.count() < numToShow + 1):
-        hideShowMore = True
+        if (category != ''):
+            category = int(category)
 
-    transactions = transactions[:numToShow]
+        if (method != ''):
+            method = int(method)
 
-    for transaction in transactions:
-        transaction.dateStr = date.strftime(transaction.date, "%m/%d/%Y")
-        amountStr = f"{transaction.amount:,}"
-        transaction.amountStr = f"${amountStr:>12}"
+        transactionFilter = {
+            'date': request.POST['date'],
+            'vendor': request.POST['vendor'],
+            'reason': request.POST['reason'],
+            'category': category,
+            'method': method
+        }
+        numToShow = int(request.POST['numToShow'])
 
-    context = {
-        'transactions': transactions,
-        'hideShowMore': hideShowMore,
-        'prevNumToShow': numToShow
-    }
-
+    context = expenseTrackerBuilder.buildListTransactionsContext(request.user, numToShow, transactionFilter)
     return render(request, "tracker/listTransactions.html", context)
 
 @login_required

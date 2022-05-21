@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load filters %}
+{% load static %}
 
 {% block nav %}
 {% endblock %}
@@ -17,25 +18,68 @@
                     <th>Category</th>
                     <th>Amount</th>
                 </thead>
-                {% for transaction in transactions %}
-                    <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=transactions'">
-                        <td>{{ transaction.dateStr }}</td>
-                        <td>{{ transaction.vendor }}</td>
-                        <td>{{ transaction.reason }}</td>
-                        <td>{{ transaction.method }}</td>
-                        <td>{{ transaction.category }}</td>
-                        <td class="accounting">{{ transaction.amountStr|spacify }}</td>
+                <form method="post" id="listTransactionsForm" action="{% url 'transactions' %}">
+                    {% csrf_token %}
+                    <tr>
+                        <td><input type="date" value="{{transactionFilter.date}}" name="date" id="listTransactionsFilterDate"><button type="submit" form="listTransactionsForm" class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td><input type="text" value="{{transactionFilter.vendor}}" name="vendor" id="listTransactionsFilterVendor"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td><input type="text" value="{{transactionFilter.reason}}" name="reason" id="listTransactionsFilterReason"><button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button></td>
+                        <td>
+                            <select name="method" id="listTransactionsFilterMethod">
+                                <option value="">-----</option>
+                                {% for method in methods %}
+                                    {% if transactionFilter.method == method.id %}
+                                        <option selected value="{{ method.id }}" label="{{ method.name }}"></option>
+                                    {% else %}
+                                        <option value="{{ method.id }}" label="{{ method.name }}"></option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button>
+                        </td>
+                        <td>
+                            <select name="category" id="listTransactionsFilterCategory">
+                                <option value="">-----</option>
+                                {% for category in categories %}
+                                    {% if transactionFilter.category == category.id %}
+                                        <option selected value="{{ category.id }}" label="{{ category.name }}"></option>
+                                    {% else %}
+                                        <option value="{{ category.id }}" label="{{ category.name }}"></option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-stealth icon-right"><i class="bi-arrow-return-left"></i></button>
+                        </td>
+                        <td></td>
                     </tr>
-                {% endfor %}
+                    <input hidden name="numToShow" type="number" value="{{ numToShow }}">
+                </form>
+                {% if numTransactions == 0 %}
+                    <tr>
+                        <td id="noTxnsFound" colspan="6">No Transactions Found</td>
+                    </tr>
+                {% else %}
+                    {% for transaction in transactions %}
+                        <tr class="clickable" onclick="window.location = '/transactions/{{transaction.id}}?prevUrl=transactions'">
+                            <td>{{ transaction.dateStr }}</td>
+                            <td>{{ transaction.vendor }}</td>
+                            <td>{{ transaction.reason }}</td>
+                            <td>{{ transaction.method }}</td>
+                            <td>{{ transaction.category }}</td>
+                            <td class="accounting">{{ transaction.amountStr|spacify }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
             </table>
         </div>
-        <p>Showing {{ transactions.count }} transactions</p>
-        {% if not hideShowMore %}
-            <form method="post" action="{% url 'transactions' %}">
-                {% csrf_token %}
-                <input hidden name="prevNumToShow" type="number" value="{{ prevNumToShow }}">
-                <button type="submit" class="btn btn-primary">Show More<i class="bi bi-plus-lg icon-right"></i></button>
-            </form>
+        {% if numTransactions == 1 %}
+            <p>Showing {{ transactions.count }} transaction</p>
+        {% elif numTransactions > 1%}
+            <p>Showing {{ transactions.count }} transactions</p>
         {% endif %}
+        {% if not hideShowMore %}
+                <button onclick="clickedShowMore()" class="btn btn-primary">Show More<i class="bi bi-plus-lg icon-right"></i></button>
+        {% endif %}
+        <script type="text/javascript" src="{% static 'tracker/listTransactions.js' %}"></script>
     </div>
 {% endblock %}
