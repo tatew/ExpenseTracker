@@ -5,10 +5,14 @@
 
 {% block content %}
     <div class="content medium-content">
-        <h1>Preset Transactions</h1>
+        <h1>Presets</h1>
+        <div class="flex-row">
+            <a href="{% url 'chooseTransactionType' %}" class="btn btn-primary"><i class="bi bi-arrow-left icon-left"></i>Back</a>
+            <a href="{% url 'createPreset' %}" class="btn btn-primary"><i class="bi bi-plus-lg icon-left"></i>Add New Preset</a>
+        </div>
         <div class="rows">
             {% for preset in presets %}
-                <a href="/presetTransactions/{{ preset.id }}?prevUrl=presetTransactions" class="btn btn-primary row-icon-subtitle">
+                <a href="/{% if preset.isExpense %}logExpense{% else %}logIncome{% endif %}?prevUrl=choosePresetTransaction&presetTransactionId={{preset.id}}" class="btn btn-primary row-icon-subtitle">
                     <div class="row-icon">
                         <i class="bi {% if preset.isExpense %} bi-graph-down-arrow {% else %} bi-graph-up-arrow {% endif %} icon-left"></i>
                     </div>

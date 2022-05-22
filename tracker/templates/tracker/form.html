@@ -112,7 +112,7 @@
         <a id="cancelBack" href="/{{ form.prevUrl.value }}" class="btn btn-primary"><i class="bi bi-arrow-left icon-left"></i>Back</a>
         <button id="cancelDisable" onclick="clickCancelDisable()" class="btn btn-primary">Cancel<i class="bi bi-x-lg icon-right"></i></button>
         <button id="edit" onclick="clickEdit()" class="btn btn-primary">Edit<i class="bi bi-pencil-square icon-right"></i></button>
-        <a id="delete" href="/transactions/{{ id }}/delete" class="btn btn-primary">Delete<i class="bi bi-x-lg icon-right"></i></a>
+        <a id="delete" href="{{ hrefDelete }}" class="btn btn-primary">Delete<i class="bi bi-x-lg icon-right"></i></a>
         <button id="btnSubmit" form="{{ form.formId }}" type="submit" class="btn btn-primary">Submit<i class="bi bi-check2-square icon-right"></i></button>
     </div>
 </div>

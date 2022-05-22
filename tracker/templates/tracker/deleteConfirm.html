@@ -7,14 +7,14 @@
     <div class="content small-content">
         <h1>Are you sure?</h1>
         <div>
-            <p>Are you sure you want to delete {{ transaction }}?</p>
+            <p>{{ message }}</p>
         </div>
         <div class="end-buttons">
-            <a class="btn btn-primary" href="/transactions/{{ transaction.id }}">Cancel<i class="bi bi-x-lg icon-right"></i></a>
-            <form id="deleteForm" action="/transactions/{{ transaction.id }}/delete" method="post" style="display: none;">
+            <a class="btn btn-primary" href="{{ hrefCancel }}">Cancel<i class="bi bi-x-lg icon-right"></i></a>
+            <form id="deleteForm" action="{{ deleteAction }}" method="post" style="display: none;">
                 {% csrf_token %}
             </form>
-            <button form="deleteForm" type="submit" class="btn btn-primary" href="{% url 'logExpense' %}">Confirm<i class="bi bi-check2-square icon-right"></i></i></a>
+            <button form="deleteForm" type="submit" class="btn btn-primary">Confirm<i class="bi bi-check2-square icon-right"></i></a>
         </div>
     </div>
 {% endblock %}
