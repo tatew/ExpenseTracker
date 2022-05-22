@@ -404,3 +404,29 @@ def buildDeleteConfirmTransactionPresetContext(preset):
     }
 
     return context
+
+def buildPresetTransactionDeleteSuccessContext(preset):
+    context = {
+        'message': f'Preset {preset.name} has been deleted',
+        'hrefLeft': '/presetTransactions/',
+        'hrefRight': '/presetTransactions/new?prevUrl=presetTransactions',
+        'iconLeft': 'bi-folder',
+        'iconRight': 'bi-plus-lg',
+        'labelLeft': 'Presets',
+        'labelRight': 'Create New Preset'
+    }
+
+    return context
+
+def buildTransactionDeleteSuccessContext(transaction):
+    context = {
+        'message': f'{transaction} has been deleted',
+        'hrefLeft': '/transactions/',
+        'hrefRight': '/chooseTransactionType/',
+        'iconLeft': 'bi-list-ul',
+        'iconRight': 'bi-pencil-square',
+        'labelLeft': 'Transactions',
+        'labelRight': 'Log'
+    }
+
+    return context

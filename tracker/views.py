@@ -210,7 +210,8 @@ def deleteConfirmTransaction(request, id):
     transaction = dataService.getTransactionById(id)
     if (request.method == "POST"):
         transaction.delete()
-        return redirect('/transactions')
+        context = expenseTrackerBuilder.buildTransactionDeleteSuccessContext(transaction)
+        return render(request, 'tracker/success.html', context)
     else:
         context = expenseTrackerBuilder.buildDeleteConfirmTransactionContext(transaction)
         return render(request, 'tracker/deleteConfirm.html', context)
@@ -281,7 +282,7 @@ def createPreset(request):
             context = expenseTrackerBuilder.buildCreatePresetTransactionFormErrorsContext(form)
             return render(request, 'tracker/createPresetTransaction.html', context)
     else:
-        prevUrl = 'choosePresetTransaction'
+        prevUrl = request.GET.get('prevUrl', 'home')
         context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl, request.user)
         return render(request, 'tracker/createPresetTransaction.html', context)
 
@@ -352,7 +353,8 @@ def deleteConfirmPresetTransaction(request, id):
     preset = dataService.getTransactionPresetById(id)
     if (request.method == "POST"):
         preset.delete()
-        return redirect('/presetTransactions')
+        context = expenseTrackerBuilder.buildPresetTransactionDeleteSuccessContext(preset)
+        return render(request, 'tracker/success.html', context)
     else:
         context = expenseTrackerBuilder.buildDeleteConfirmTransactionPresetContext(preset)
         return render(request, 'tracker/deleteConfirm.html', context)
