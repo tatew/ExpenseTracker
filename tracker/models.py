@@ -52,3 +52,6 @@ class TransactionPreset(models.Model):
     method = models.ForeignKey(Method, on_delete=PROTECT, null=True, blank=True)
     amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     user = models.ForeignKey(auth.get_user_model(), on_delete=PROTECT)
+
+    def __str__(self):
+        return self.name

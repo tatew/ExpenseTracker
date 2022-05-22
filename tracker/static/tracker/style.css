@@ -137,13 +137,13 @@ i.xl {
     margin-bottom: 2rem;
 }
 
+.content h1 {
+    text-align: center;
+}
+
 .huge-content {
     width: 90%;
     min-width: 250px;
-}
-
-.huge-content h1 {
-    text-align: center;
 }
 
 .big-content {
@@ -152,28 +152,16 @@ i.xl {
     max-width: 1200px;
 }
 
-.big-content h1 {
-    text-align: center;
-}
-
 .medium-content {
     width: 70%;
     min-width: 250px;
     max-width: 600px;
 }
 
-.medium-content h1 {
-    text-align: center;
-}
-
 .small-content {
     width: 30%;
     min-width: 250px;
     max-width: 350px;
-}
-
-.small-content h1 {
-    text-align: center;
 }
 
 /* flex row */

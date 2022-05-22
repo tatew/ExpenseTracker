@@ -192,4 +192,14 @@ def filterByCategory(transactions, category):
     else: 
         return transactions
 
+def updateTransactionPresetFromForm(form, preset):
+    preset.name=form.cleaned_data['name']
+    preset.reason=form.cleaned_data['reason']
+    preset.vendor=form.cleaned_data['vendor']
+    preset.method=form.cleaned_data['method']
+    preset.category=form.cleaned_data['category']
+    preset.amount=form.cleaned_data['amount']
+    preset.save()
+
+    return preset
 

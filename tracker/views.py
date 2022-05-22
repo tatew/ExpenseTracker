@@ -1,6 +1,7 @@
-from cmath import log
+from cmath import exp, log
 from datetime import datetime
 import re
+from wsgiref.util import request_uri
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -142,77 +143,29 @@ def transaction(request, id):
     if (transaction.user != request.user):
         raise Http404
 
-    isExpense = transaction.amount < 0
-
     if (request.method == "POST"):
         # create a form instance and populate it with data from the request:
         form = TransactionForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            
-            amount = form.cleaned_data['amount'] if not isExpense else form.cleaned_data['amount'] * -1
-
-            transaction.date=form.cleaned_data['date']
-            transaction.reason=form.cleaned_data['reason']
-            transaction.vendor=form.cleaned_data['vendor']
-            transaction.method=form.cleaned_data['method']
-            transaction.category=form.cleaned_data['category']
-            transaction.amount=amount
-            transaction.save()
-
-            return render(request, 'tracker/transactionUpdateSuccess.html', { 'transaction': transaction })
+            context = expenseTrackerBuilder.buildTransactionUpdateSuccessContext(form, transaction)
+            return render(request, 'tracker/transactionUpdateSuccess.html', context)
         else:
-            context = {
-                'form': form,
-                'cancelBack': False,
-                'cancelDisable': True,
-                'delete': False,
-                'submit': True,
-                'edit': False,
-                'disableForm': False,
-                'id': id
-            }
+            context = expenseTrackerBuilder.buildTransactionUpdateErrorContext(form, id)
             return render(request, "tracker/fullPageForm.html", context)
     else:
         prevUrl = request.GET.get('prevUrl', 'home')
-
-        inital = {
-            'date': transaction.date,
-            'reason': transaction.reason,
-            'vendor': transaction.vendor,
-            'method': transaction.method,
-            'category': transaction.category,
-            'amount': abs(transaction.amount),
-            'user': transaction.user,
-            'prevUrl': prevUrl
-        }
-        form = TransactionForm(initial=inital)
-        form.formId = 'updateTransaction'
-        form.action = '/transactions/' + str(id)
-        form.title = 'Expense Details' if isExpense else 'Income Details'
-        
-        context = {
-            'form': form,
-            'cancelBack': True,
-            'cancelDisable': False,
-            'delete': True,
-            'submit': False,
-            'edit': True,
-            'disableForm': True,
-            'id': id
-        }
-
+        context = expenseTrackerBuilder.buildTransactionUpdateFormContext(transaction, prevUrl)
         return render(request, "tracker/fullPageForm.html", context)
 
-def deleteConfirm(request, id):
+def deleteConfirmTransaction(request, id):
     transaction = dataService.getTransactionById(id)
     if (request.method == "POST"):
         transaction.delete()
-        return redirect('/transactions')
+        context = expenseTrackerBuilder.buildTransactionDeleteSuccessContext(transaction)
+        return render(request, 'tracker/success.html', context)
     else:
-        context = {
-            'transaction': transaction
-        }
+        context = expenseTrackerBuilder.buildDeleteConfirmTransactionContext(transaction)
         return render(request, 'tracker/deleteConfirm.html', context)
 
 @login_required
@@ -264,25 +217,24 @@ def dashboard(request):
     return render(request, 'tracker/dashboard.html', context)
 
 @login_required
-def presetTransactions(request):
+def choosePresetTransaction(request):
 
-    context = expenseTrackerBuilder.buildPresetTransactionsContext(request.user)
+    context = expenseTrackerBuilder.buildChoosePresetTransactionContext(request.user)
 
-    return render(request, 'tracker/presetTransactions.html', context)
+    return render(request, 'tracker/choosePresetTransaction.html', context)
 
 @login_required
 def createPreset(request):
     if (request.method == 'POST'):
         form = PresetTransactionForm(request.POST)
         if (form.is_valid()):
-            print(form.cleaned_data)
             context = expenseTrackerBuilder.buildCreatePresetTransactionSuccessContext(request.user, form)
             return render(request, 'tracker/createPresetSuccess.html', context)
         else:
             context = expenseTrackerBuilder.buildCreatePresetTransactionFormErrorsContext(form)
             return render(request, 'tracker/createPresetTransaction.html', context)
     else:
-        prevUrl = 'presetTransactions'
+        prevUrl = request.GET.get('prevUrl', 'home')
         context = expenseTrackerBuilder.buildCreatePresetTransactionFormContext(prevUrl, request.user)
         return render(request, 'tracker/createPresetTransaction.html', context)
 
@@ -321,3 +273,40 @@ def toggleActive(request, id):
     if (request.method == 'POST'):
         dataService.methodToggleActive(request.user, id)
         return redirect('methods')
+
+@login_required
+def presetTransactions(request):
+    context = expenseTrackerBuilder.buildPresetTransactionsContext(request.user)
+
+    return render(request, 'tracker/presetTransactions.html', context)
+
+@login_required
+def presetTransaction(request, id):
+    preset = dataService.getTransactionPresetById(id)
+    if (preset.user != request.user):
+        raise Http404
+
+    if (request.method == "POST"):
+        # create a form instance and populate it with data from the request:
+        form = PresetTransactionForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            context = expenseTrackerBuilder.buildUpdatePresetTransactionSuccessContext(form, preset)
+            return render(request, 'tracker/success.html', context)
+        else:
+            context = expenseTrackerBuilder.buildUpdatePresetTransactionErrorContext(form, id)
+            return render(request, "tracker/fullPageForm.html", context)
+    else:
+        prevUrl = request.GET.get('prevUrl', 'settings')
+        context = expenseTrackerBuilder.buildUpdatePresetTransactionFormContext(preset, prevUrl)
+        return render(request, "tracker/fullPageForm.html", context)
+
+def deleteConfirmPresetTransaction(request, id):
+    preset = dataService.getTransactionPresetById(id)
+    if (request.method == "POST"):
+        preset.delete()
+        context = expenseTrackerBuilder.buildPresetTransactionDeleteSuccessContext(preset)
+        return render(request, 'tracker/success.html', context)
+    else:
+        context = expenseTrackerBuilder.buildDeleteConfirmTransactionPresetContext(preset)
+        return render(request, 'tracker/deleteConfirm.html', context)

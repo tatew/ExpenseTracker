@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="content small-content">
+        <h1>Success!</h1>
+        <div>
+            <p>{{ message }}</p>
+        </div>
+        <div class="end-buttons">
+            <a class="btn btn-primary" href="{{ hrefLeft }}"><i class="bi {{ iconLeft }} icon-left"></i>{{ labelLeft }}</a>
+            <a class="btn btn-primary" href="{{ hrefRight }}">{{ labelRight }}<i class="bi {{ iconRight }} icon-right"></i></a>
+        </div>
+    </div>
+{% endblock %}
