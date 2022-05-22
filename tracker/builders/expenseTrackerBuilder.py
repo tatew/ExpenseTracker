@@ -228,7 +228,7 @@ def getTotalsForMonth(user, year, month):
 
     return totalsForMonth
 
-def buildPresetTransactionsContext(user):
+def buildChoosePresetTransactionContext(user):
     presets = dataService.getTransactionPresetsForUser(user);
 
     context = {
@@ -307,3 +307,191 @@ def buildListTransactionsContext(user, numToShow, transactionFilter):
         'numTransactions': len(transactions)
     }
     return context
+
+def buildPresetTransactionsContext(user):
+    
+    presets = dataService.getTransactionPresetsForUser(user)
+
+    context = {
+        'presets': presets
+    }
+
+    return context
+
+def buildUpdatePresetTransactionSuccessContext(preset, form):
+
+    preset = dataService.updateTransactionPresetFromForm(preset, form)
+
+    logAction = ''
+
+    if (preset.isExpense):
+        logAction = 'logExpense'
+    else: 
+        logAction = 'logIncome'
+
+    context = {
+        'message': f'Preset {preset.name} has been updated',
+        'hrefLeft': '/presetTransactions/',
+        'hrefRight': f'/{ logAction }?prevUrl=choosePresetTransaction&presetTransactionId={ preset.id }',
+        'iconLeft': 'bi-arrow-left',
+        'iconRight': 'bi-pencil-square',
+        'labelLeft': 'Back',
+        'labelRight': 'Log this Preset'
+    }
+
+    return context
+
+def buildUpdatePresetTransactionErrorContext(form, id):
+    context = {
+        'form': form,
+        'cancelBack': False,
+        'cancelDisable': True,
+        'delete': False,
+        'submit': True,
+        'edit': False,
+        'disableForm': False,
+        'id': id,
+        'hrefDelete': f'/presetTransactions/{ id }/delete'
+    }
+
+    return context
+
+def buildUpdatePresetTransactionFormContext(preset, prevUrl):
+    inital = {
+        'name': preset.name,
+        'reason': preset.reason,
+        'vendor': preset.vendor,
+        'method': preset.method,
+        'category': preset.category,
+        'amount': preset.amount,
+        'user': preset.user,
+        'prevUrl': prevUrl
+    }
+
+    form = PresetTransactionForm(initial=inital)
+    form.formId = 'updatePresetTransaction'
+    form.action = '/presetTransactions/' + str(preset.id) +'/'
+    form.title = 'Preset Transaction Details'
+    
+    context = {
+        'form': form,
+        'cancelBack': True,
+        'cancelDisable': False,
+        'delete': True,
+        'submit': False,
+        'edit': True,
+        'disableForm': True,
+        'id': id,
+        'hrefDelete': f'/presetTransactions/{ preset.id }/delete'
+    }
+
+    return context
+
+def buildDeleteConfirmTransactionContext(transaction):
+    context = {
+        'message': f'Are you sure you want to delete { transaction }?',
+        'hrefCancel': f'/transactions/{ transaction.id }',
+        'deleteAction': f'/transactions/{ transaction.id }/delete',
+    }
+
+    return context
+
+def buildDeleteConfirmTransactionPresetContext(preset):
+    context = {
+        'message': f'Are you sure you want to delete { preset }?',
+        'hrefCancel': f'/presetTransactions/{ preset.id }',
+        'deleteAction': f'/presetTransactions/{ preset.id }/delete',
+    }
+
+    return context
+
+def buildPresetTransactionDeleteSuccessContext(preset):
+    context = {
+        'message': f'Preset {preset.name} has been deleted',
+        'hrefLeft': '/presetTransactions/',
+        'hrefRight': '/presetTransactions/new?prevUrl=presetTransactions',
+        'iconLeft': 'bi-folder',
+        'iconRight': 'bi-plus-lg',
+        'labelLeft': 'Presets',
+        'labelRight': 'Create New Preset'
+    }
+
+    return context
+
+def buildTransactionDeleteSuccessContext(transaction):
+    context = {
+        'message': f'{transaction} has been deleted',
+        'hrefLeft': '/transactions/',
+        'hrefRight': '/chooseTransactionType/',
+        'iconLeft': 'bi-list-ul',
+        'iconRight': 'bi-pencil-square',
+        'labelLeft': 'Transactions',
+        'labelRight': 'Log'
+    }
+
+    return context
+
+def buildTransactionUpdateSuccessContext(form, transaction):
+    isExpense = transaction.amount < 0
+    amount = form.cleaned_data['amount'] if not isExpense else form.cleaned_data['amount'] * -1
+
+    transaction.date=form.cleaned_data['date']
+    transaction.reason=form.cleaned_data['reason']
+    transaction.vendor=form.cleaned_data['vendor']
+    transaction.method=form.cleaned_data['method']
+    transaction.category=form.cleaned_data['category']
+    transaction.amount=amount
+    transaction.save()
+
+    context = {
+        'transaction': transaction
+    }
+
+    return context
+
+def buildTransactionUpdateErrorContext(form, id):
+    context = {
+        'form': form,
+        'cancelBack': False,
+        'cancelDisable': True,
+        'delete': False,
+        'submit': True,
+        'edit': False,
+        'disableForm': False,
+        'id': id
+    }
+
+    return context
+
+def buildTransactionUpdateFormContext(transaction, prevUrl):
+    isExpense = transaction.amount < 0
+    inital = {
+        'date': transaction.date,
+        'reason': transaction.reason,
+        'vendor': transaction.vendor,
+        'method': transaction.method,
+        'category': transaction.category,
+        'amount': abs(transaction.amount),
+        'user': transaction.user,
+        'prevUrl': prevUrl
+    }
+
+    form = TransactionForm(initial=inital)
+    form.formId = 'updateTransaction'
+    form.action = '/transactions/' + str(transaction.id)
+    form.title = 'Expense Details' if isExpense else 'Income Details'
+    
+    context = {
+        'form': form,
+        'cancelBack': True,
+        'cancelDisable': False,
+        'delete': True,
+        'submit': False,
+        'edit': True,
+        'disableForm': True,
+        'id': id,
+        'hrefDelete': f'/transactions/{ id }/delete'
+    }
+
+    return context
+    
