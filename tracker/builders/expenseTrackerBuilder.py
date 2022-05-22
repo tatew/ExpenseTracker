@@ -430,3 +430,68 @@ def buildTransactionDeleteSuccessContext(transaction):
     }
 
     return context
+
+def buildTransactionUpdateSuccessContext(form, transaction):
+    isExpense = transaction.amount < 0
+    amount = form.cleaned_data['amount'] if not isExpense else form.cleaned_data['amount'] * -1
+
+    transaction.date=form.cleaned_data['date']
+    transaction.reason=form.cleaned_data['reason']
+    transaction.vendor=form.cleaned_data['vendor']
+    transaction.method=form.cleaned_data['method']
+    transaction.category=form.cleaned_data['category']
+    transaction.amount=amount
+    transaction.save()
+
+    context = {
+        'transaction': transaction
+    }
+
+    return context
+
+def buildTransactionUpdateErrorContext(form, id):
+    context = {
+        'form': form,
+        'cancelBack': False,
+        'cancelDisable': True,
+        'delete': False,
+        'submit': True,
+        'edit': False,
+        'disableForm': False,
+        'id': id
+    }
+
+    return context
+
+def buildTransactionUpdateFormContext(transaction, prevUrl):
+    isExpense = transaction.amount < 0
+    inital = {
+        'date': transaction.date,
+        'reason': transaction.reason,
+        'vendor': transaction.vendor,
+        'method': transaction.method,
+        'category': transaction.category,
+        'amount': abs(transaction.amount),
+        'user': transaction.user,
+        'prevUrl': prevUrl
+    }
+
+    form = TransactionForm(initial=inital)
+    form.formId = 'updateTransaction'
+    form.action = '/transactions/' + str(transaction.id)
+    form.title = 'Expense Details' if isExpense else 'Income Details'
+    
+    context = {
+        'form': form,
+        'cancelBack': True,
+        'cancelDisable': False,
+        'delete': True,
+        'submit': False,
+        'edit': True,
+        'disableForm': True,
+        'id': id,
+        'hrefDelete': f'/transactions/{ id }/delete'
+    }
+
+    return context
+    
