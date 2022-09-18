@@ -490,7 +490,7 @@ def buildTransactionUpdateFormContext(transaction, prevUrl):
         'edit': True,
         'disableForm': True,
         'id': id,
-        'hrefDelete': f'/transactions/{ id }/delete'
+        'hrefDelete': f'/transactions/{ transaction.id }/delete'
     }
 
     return context
