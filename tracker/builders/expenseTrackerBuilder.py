@@ -188,33 +188,17 @@ def buildMonthlyData(user):
         totalForMonth['month'] = datetime.strptime(str(currentDate.month), "%m").strftime("%B")
         monthlyDataList.append(totalForMonth)
 
-        totalExpenses += totalForMonth['numericSumOfExpensesForMonth']
-        totalIncomes += totalForMonth['numericSumOfImcomesForMonth']
-
         currentDate += relativedelta(months=-1)
 
     #calculate averages
-    avgExpense = totalExpenses / len(monthlyDataList)
-    avgExpense = avgExpense.quantize(decimal.Decimal("0.01"))
-    avgExpenseString = f"{avgExpense:,}"
-    avgExpenseString = f"${avgExpenseString:>12}"
-
-    avgIncome = totalIncomes / len(monthlyDataList)
-    avgIncome = avgIncome.quantize(decimal.Decimal("0.01"))
-    avgIncomeString = f"{avgIncome:,}"
-    avgIncomeString = f"${avgIncomeString:>12}"
-
-    avgNet = (totalIncomes + totalExpenses) / len(monthlyDataList)
-    avgNet = avgNet.quantize(decimal.Decimal("0.01"))
-    avgNetString = f"{avgNet:,}"
-    avgNetString = f"${avgNetString:>12}"
+    averagesAllTime = calculateAveragesFromMonths(monthlyDataList)
 
     monthlyData = {
         'currentMonthData': currentMonthData,
         'monthlyDataList': monthlyDataList,
-        'avgExpense': avgExpenseString,
-        'avgIncome': avgIncomeString,
-        'avgNet': avgNetString
+        'avgExpense': averagesAllTime['avgExpense'],
+        'avgIncome': averagesAllTime['avgIncome'],
+        'avgNet': averagesAllTime['avgNet']
     }
 
     return monthlyData
@@ -239,6 +223,34 @@ def getTotalsForMonth(user, year, month):
     }
 
     return totalsForMonth
+
+def calculateAveragesFromMonths(monthlyDataList):
+
+    totalExpenses = sum(month['numericSumOfExpensesForMonth'] for month in monthlyDataList)
+    totalIncomes = sum(month['numericSumOfImcomesForMonth'] for month in monthlyDataList)
+
+    avgExpense = totalExpenses / len(monthlyDataList)
+    avgExpense = avgExpense.quantize(decimal.Decimal("0.01"))
+    avgExpenseString = f"{avgExpense:,}"
+    avgExpenseString = f"${avgExpenseString:>12}"
+
+    avgIncome = totalIncomes / len(monthlyDataList)
+    avgIncome = avgIncome.quantize(decimal.Decimal("0.01"))
+    avgIncomeString = f"{avgIncome:,}"
+    avgIncomeString = f"${avgIncomeString:>12}"
+
+    avgNet = (totalIncomes + totalExpenses) / len(monthlyDataList)
+    avgNet = avgNet.quantize(decimal.Decimal("0.01"))
+    avgNetString = f"{avgNet:,}"
+    avgNetString = f"${avgNetString:>12}"
+
+    averages = {
+        'avgIncome': avgIncomeString,
+        'avgExpense': avgExpenseString,
+        'avgNet': avgNetString
+    }
+
+    return averages
 
 def buildChoosePresetTransactionContext(user):
     presets = dataService.getTransactionPresetsForUser(user);
