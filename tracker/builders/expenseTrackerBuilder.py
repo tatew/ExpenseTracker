@@ -1,3 +1,4 @@
+from calendar import month
 from tracker.models import Method
 from ..services import dataService
 from datetime import datetime, date
@@ -170,8 +171,17 @@ def buildMonthlyData(user):
     totalExpenses = 0
     totalIncomes = 0
     currentDate = datetime(datetime.now().year, datetime.now().month, 1)
+
+    #get the data for the current month
+    currentMonthData = getTotalsForMonth(user, currentDate.year, currentDate.month)
+    currentMonthData['year'] = currentDate.year
+    currentMonthData['month'] = datetime.strptime(str(currentDate.month), "%m").strftime("%B")
+
+    #go back by 1 month to not include the current month in averages
+    currentDate += relativedelta(months=-1)
     endDate = oldestTransactionDateMonthAndYear
 
+    #get historical monthly data, exclude current month
     while (currentDate >= endDate):
         totalForMonth = getTotalsForMonth(user, currentDate.year, currentDate.month)
         totalForMonth['year'] = currentDate.year
@@ -183,6 +193,7 @@ def buildMonthlyData(user):
 
         currentDate += relativedelta(months=-1)
 
+    #calculate averages
     avgExpense = totalExpenses / len(monthlyDataList)
     avgExpense = avgExpense.quantize(decimal.Decimal("0.01"))
     avgExpenseString = f"{avgExpense:,}"
@@ -199,6 +210,7 @@ def buildMonthlyData(user):
     avgNetString = f"${avgNetString:>12}"
 
     monthlyData = {
+        'currentMonthData': currentMonthData,
         'monthlyDataList': monthlyDataList,
         'avgExpense': avgExpenseString,
         'avgIncome': avgIncomeString,

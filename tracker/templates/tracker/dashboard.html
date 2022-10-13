@@ -10,7 +10,47 @@
             <h1>Dashboard</h1>
             <div class="monthly-results">
                 <div class="monthly-results-tile">
-                    <h2>Monthly Data</h2>
+                    <h2>Current Month</h2>
+                    <div class="table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Income</th>
+                                    <th>Expenses</th>
+                                    <th>Net Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{monthlyData.currentMonthData.sumOfImcomesForMonth|spacify}}</td>
+                                    <td>{{monthlyData.currentMonthData.sumOfExpensesForMonth|spacify}}</td>
+                                    <td>{{monthlyData.currentMonthData.netBalanceForMonth|spacify}}</td>
+                                </tr>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <h2>Averages</h2>
+                    <div class="table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Timeframe</th>
+                                    <th>Income</th>
+                                    <th>Expenses</th>
+                                    <th>Net Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>All Time</td>
+                                    <td>{{monthlyData.avgIncome|spacify}}</td>
+                                    <td>{{monthlyData.avgExpense|spacify}}</td>
+                                    <td>{{monthlyData.avgNet|spacify}}</td>
+                                </tr>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <h2>Historical Data</h2>
                     <div class="table">
                         <table>
                             <thead>
@@ -22,12 +62,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th>Average</th>
-                                    <td>{{monthlyData.avgIncome|spacify}}</td>
-                                    <td>{{monthlyData.avgExpense|spacify}}</td>
-                                    <td>{{monthlyData.avgNet|spacify}}</td>
-                                </tr>
                                 {% for month in monthlyData.monthlyDataList %}
                                     <tr>
                                         <th>{{month.month}} {{month.year}}</th>
@@ -38,6 +72,7 @@
                                 {% endfor %}
                             </tbody>
                         </table> 
+                        </div> 
                     </div>  
                 </div>             
             </div>
