@@ -1,0 +1,14 @@
+# flyctl launch added from .gitignore
+**/*__pycache__
+**/.vscode
+### Django ###
+**/*.log
+**/*.pot
+**/*.pyc
+**/__pycache__
+**/local_settings.py
+**/.env
+**/staticfiles
+#me
+*.sqlite3
+.git
