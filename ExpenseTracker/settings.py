@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-import django_heroku
 import os
 import dj_database_url
 import dotenv
@@ -22,17 +21,29 @@ dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
 
+from pathlib import Path
+from environs import Env  # new
+
+env = Env()  # new
+env.read_env()  # new
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', False)
+DEBUG = env.bool("DEBUG", default=False)  
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "simple-tracker.fly.dev"]
+
+CSRF_TRUSTED_ORIGINS = ["https://simple-tracker.fly.dev"]
+
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
 
 
 # Application definition
@@ -126,7 +137,7 @@ STATICFILES_FINDERS = [
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-django_heroku.settings(locals())
+
 options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
 
@@ -134,5 +145,6 @@ LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "/"
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/staticfiles/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
